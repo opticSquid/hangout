@@ -14,6 +14,8 @@
         <option value="$PROJECT_DIR$/auxillary-services/hangout-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/auxillary-services/hangout-service-discovery/pom.xml" />
         <option value="$PROJECT_DIR$/core-services/hangout-posts-service/pom.xml" />
+        <option value="$PROJECT_DIR$/auxiliary-services/hangout-service-discovery/pom.xml" />
+        <option value="$PROJECT_DIR$/auxiliary-services/hangout-gateway/pom.xml" />
       </list>
     </option>
     <option name="workspaceImportForciblyTurnedOn" value="true" />
