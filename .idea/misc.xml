@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="Quarkus" url="file://$PROJECT_DIR$/core-services/hangout-storage-service" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/core-services/hangout-auth-service/pom.xml" />
+        <option value="$PROJECT_DIR$/core-services/hangout-post-service/pom.xml" />
+        <option value="$PROJECT_DIR$/core-services/hangout-vendor-service/pom.xml" />
+        <option value="$PROJECT_DIR$/core-services/hangout-storage-service/pom.xml" />
+        <option value="$PROJECT_DIR$/auxillary-services/hangout-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/auxillary-services/hangout-service-discovery/pom.xml" />
+        <option value="$PROJECT_DIR$/core-services/hangout-posts-service/pom.xml" />
+      </list>
+    </option>
+    <option name="workspaceImportForciblyTurnedOn" value="true" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
+  </component>
+</project>

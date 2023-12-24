@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/auxillary-services/hangout-gateway" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/auxillary-services/hangout-service-discovery" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/core-services/hangout-auth-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/core-services/hangout-posts-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/core-services/hangout-storage-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/core-services/hangout-vendor-service" vcs="Git" />
+  </component>
+</project>

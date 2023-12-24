@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="hangout-storage-service" />
+        <module name="hangout-posts-service" />
+        <module name="hangout-service-discovery" />
+        <module name="hangout-gateway" />
+        <module name="hangout-vendor-service" />
+        <module name="hangout-auth-service" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="hangout-auth-service" options="-parameters" />
+      <module name="hangout-gateway" options="-parameters" />
+      <module name="hangout-posts-service" options="-parameters" />
+      <module name="hangout-service-discovery" options="-parameters" />
+      <module name="hangout-storage-service" options="-parameters" />
+      <module name="hangout-vendor-service" options="-parameters" />
+    </option>
+  </component>
+</project>

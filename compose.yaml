@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  zipkin:
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+
+  loki:
+    image: grafana/loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - lokiData:/loki
+
+  geo-postgres:
+    image: postgis/postgis
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=PkNLm@#2357
+      - POSTGRES_DB=vendors
+    volumes:
+      - geopostgresData:/var/lib/postgresql/data
+
+volumes:
+  geopostgresData:
+    driver: local
+  lokiData:
+    driver: local
