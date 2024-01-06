@@ -1,8 +1,8 @@
-[submodule "auxillary-services/hangout-service-discovery"]
-	path = auxillary-services/hangout-service-discovery
+[submodule "auxiliary-services/hangout-service-discovery"]
+	path = auxiliary-services/hangout-service-discovery
 	url = git@github.com:opticSquid/hangout-service-discovery.git
-[submodule "auxillary-services/hangout-gateway"]
-	path = auxillary-services/hangout-gateway
+[submodule "auxiliary-services/hangout-gateway"]
+	path = auxiliary-services/hangout-gateway
 	url = git@github.com:opticSquid/hangout-gateway.git
 [submodule "core-services/hangout-auth-service"]
 	path = core-services/hangout-auth-service
@@ -15,4 +15,4 @@
 	url = git@github.com:opticSquid/hangout-storage-service.git
 [submodule "core-services/hangout-vendor-service"]
 	path = core-services/hangout-vendor-service
-	url = https://github.com/opticSquid/hangout-vendor-service.git
+	url = git@github.com:opticSquid/hangout-vendor-service.git
