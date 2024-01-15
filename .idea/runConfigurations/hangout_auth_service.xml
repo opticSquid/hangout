@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="hangout-posts-service" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="hangout-auth-service" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -23,7 +23,7 @@
             <list />
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$/core-services/hangout-posts-service" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/core-services/hangout-auth-service" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>

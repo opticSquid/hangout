@@ -1,15 +1,32 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="hangout-vendor-service" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.hangout.core.vendorservice.VendorServiceApplication" />
-    <module name="hangout-vendor-service" />
-    <extension name="coverage">
-      <pattern>
-        <option name="PATTERN" value="com.hangout.core.vendorservice.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
+  <configuration default="false" name="hangout-vendor-service" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <option name="myGeneralSettings" />
+      <option name="myRunnerSettings" />
+      <option name="myRunnerParameters">
+        <MavenRunnerParameters>
+          <option name="cmdOptions" />
+          <option name="profiles">
+            <set />
+          </option>
+          <option name="goals">
+            <list>
+              <option value="spring-boot:run" />
+            </list>
+          </option>
+          <option name="multimoduleDir" />
+          <option name="pomFileName" />
+          <option name="profilesMap">
+            <map />
+          </option>
+          <option name="projectsCmdOptionValues">
+            <list />
+          </option>
+          <option name="resolveToWorkspace" value="false" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/core-services/hangout-vendor-service" />
+        </MavenRunnerParameters>
+      </option>
+    </MavenSettings>
+    <method v="2" />
   </configuration>
 </component>
