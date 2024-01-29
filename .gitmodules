@@ -13,6 +13,3 @@
 [submodule "core-services/hangout-storage-service"]
 	path = core-services/hangout-storage-service
 	url = git@github.com:opticSquid/hangout-storage-service.git
-[submodule "core-services/hangout-vendor-service"]
-	path = core-services/hangout-vendor-service
-	url = git@github.com:opticSquid/hangout-vendor-service.git
