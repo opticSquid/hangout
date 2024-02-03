@@ -28,7 +28,8 @@ services:
   # event bus
   # Log retention time !!!!required
   # run in container shell (log retention: 1 min, max size: 500mb)
-  # kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics
+  # open shell by docker exec -it hangout-Kafka-1 /bin/bash
+  # /opt/bitnami/kafka/bin/kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics
   #  --entity-name verification-status --add-config retention.ms=60000,retention.bytes=524288000
   kafka:
     image: bitnami/kafka:latest
