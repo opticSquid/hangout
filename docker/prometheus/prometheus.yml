@@ -6,16 +6,35 @@ scrape_configs:
     - job_name: 'prometheus'
       static_configs:
           - targets: ['host.docker.internal:9090']
-    - job_name: eureka-discovery
-      metrics_path: /actuator/prometheus
-      eureka_sd_configs:
-        - server: 'http://host.docker.internal:8761/eureka'
-          refresh_interval: 60s
-      relabel_configs:
-        - source_labels: [ __meta_eureka_app_name ]
-          target_label: application
-        - source_labels: [ __meta_eureka_app_instance_metadata_metrics_path ]
-          target_label: metrics_path
-        - source_labels: [ __address__ ]
-          target_label: instance
 
+    - job_name: hangout-gateway
+      metrics_path: /actuator/prometheus
+      consul_sd_configs:
+        - server: 'http://host.docker.internal:5500'
+          services:
+            - gateway
+          refresh_interval: 60s
+
+    - job_name: hangout-vendors
+      metrics_path: /vendors/actuator/prometheus
+      consul_sd_configs:
+        - server: 'http://host.docker.internal:5500'
+          services:
+            - vendor
+          refresh_interval: 60s
+
+    - job_name: hangout-posts
+      metrics_path: /posts/actuator/prometheus
+      consul_sd_configs:
+        - server: 'http://host.docker.internal:5500'
+          services:
+            - post
+          refresh_interval: 60s
+
+    - job_name: hangout-auths
+      metrics_path: /auths/actuator/prometheus
+      consul_sd_configs:
+        - server: 'http://host.docker.internal:5500'
+          services:
+            - auth
+          refresh_interval: 60s

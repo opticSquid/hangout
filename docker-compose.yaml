@@ -18,12 +18,13 @@ services:
 #      - ./auxiliary-services/Consul/server1.json:/consul/config/server1.json
 #      - ./auxiliary-services/Consul/certs/:/consul/config/certs/
 #      - ./auxiliary-services/Consul/consul-acl.json:/consul/config/consul-acl.json
+#      - ./docker/consul/consul.json:/consul.json:ro
       - consulServerData:/consul/data
     ports:
       - "5500:8500"
       - "5600:8600/tcp"
       - "5600:8600/udp"
-#    command: "agent"
+#    command: "server -dev"
 
   # event bus
   # Log retention time !!!!required
@@ -80,6 +81,7 @@ services:
     ports:
       - "3100:3100"    # loki needs to be exposed so it receives logs
     volumes:
+      - ./docker/loki/loki-local.yaml:/etc/loki/local-config.yaml:ro
       - lokiData:/loki
     environment:
       - JAEGER_AGENT_HOST=tempo
@@ -95,6 +97,7 @@ services:
       - --enable-feature=exemplar-storage
       - --config.file=/etc/prometheus/prometheus.yml
       - --web.enable-remote-write-receiver
+      - --storage.tsdb.retention.time=1h
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheusData:/prometheus
