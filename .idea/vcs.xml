@@ -3,10 +3,10 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/auxiliary-services/hangout-gateway" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/auxiliary-services/hangout-service-discovery" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/core-services/hangout-auth-service" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/core-services/hangout-posts-service" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/core-services/hangout-storage-service" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/core-services/hangout-vendor-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/core-services/hangout-verification-service" vcs="Git" />
   </component>
 </project>

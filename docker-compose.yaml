@@ -1,5 +1,63 @@
 version: "3.8"
 services:
+  # database
+  geo-postgres:
+    image: postgis/postgis
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=PkNLm@#2357
+      - POSTGRES_DB=vendors
+    volumes:
+      - geopostgresData:/var/lib/postgresql/data
+
+  # service-mesh
+  consul-server:
+    image: hashicorp/consul:latest
+    volumes:
+#      - ./auxiliary-services/Consul/server1.json:/consul/config/server1.json
+#      - ./auxiliary-services/Consul/certs/:/consul/config/certs/
+#      - ./auxiliary-services/Consul/consul-acl.json:/consul/config/consul-acl.json
+#      - ./docker/consul/consul.json:/consul.json:ro
+      - consulServerData:/consul/data
+    ports:
+      - "5500:8500"
+      - "5600:8600/tcp"
+      - "5600:8600/udp"
+#    command: "server -dev"
+
+  # event bus
+  # Log retention time !!!!required
+  # run in container shell (log retention: 1 min, max size: 500mb)
+  # open shell by docker exec -it hangout-Kafka-1 /bin/bash
+  # /opt/bitnami/kafka/bin/kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics
+  #  --entity-name verification-status --add-config retention.ms=60000,retention.bytes=524288000
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafkaData:/bitnami
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,LISTENER_DOCKER_INTERNAL://:19091
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092,LISTENER_DOCKER_INTERNAL://kafka:19091,
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,LISTENER_DOCKER_INTERNAL:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=LISTENER_DOCKER_INTERNAL
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - KAFKA_BROKERCONNECT=kafka:19091
+      - SERVER_SERVLET_CONTEXTPATH=/
+
+
   # traces
   tempo:
     image: grafana/tempo
@@ -14,6 +72,7 @@ services:
       - "4318:4318"  # otlp http
       - "3200"   # grafana => tempo
       - "4317"  # otlp grpc
+
   # logs
   loki:
     image: grafana/loki
@@ -22,12 +81,14 @@ services:
     ports:
       - "3100:3100"    # loki needs to be exposed so it receives logs
     volumes:
+      - ./docker/loki/loki-local.yaml:/etc/loki/local-config.yaml:ro
       - lokiData:/loki
     environment:
       - JAEGER_AGENT_HOST=tempo
       - JAEGER_ENDPOINT=http://tempo:14268/api/traces # send traces to Tempo
       - JAEGER_SAMPLER_TYPE=const
       - JAEGER_SAMPLER_PARAM=1
+
   # metrics and alerts
   prometheus:
     image: prom/prometheus
@@ -36,11 +97,13 @@ services:
       - --enable-feature=exemplar-storage
       - --config.file=/etc/prometheus/prometheus.yml
       - --web.enable-remote-write-receiver
+      - --storage.tsdb.retention.time=1h
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheusData:/prometheus
     ports:
       - "9090:9090"
+
   # dashboard
   grafana:
     image: grafana/grafana
@@ -58,21 +121,17 @@ services:
       - tempo
       - loki
       - prometheus
-  geo-postgres:
-    image: postgis/postgis
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD=PkNLm@#2357
-      - POSTGRES_DB=vendors
-    volumes:
-      - geopostgresData:/var/lib/postgresql/data
+
 volumes:
+  geopostgresData:
+    driver: local
+  consulServerData:
+    driver: local
+  kafkaData:
+    driver: local
   tempoData:
     driver: local
   lokiData:
     driver: local
   prometheusData:
-    driver: local
-  geopostgresData:
     driver: local

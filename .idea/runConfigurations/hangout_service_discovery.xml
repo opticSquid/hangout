@@ -1,15 +1,32 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="hangout-service-discovery" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.hangout.auxillary.servicediscovery.ServicediscoveryApplication" />
-    <module name="hangout-service-discovery" />
-    <extension name="coverage">
-      <pattern>
-        <option name="PATTERN" value="com.hangout.auxillary.servicediscovery.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
+  <configuration default="false" name="hangout-service-discovery" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <option name="myGeneralSettings" />
+      <option name="myRunnerSettings" />
+      <option name="myRunnerParameters">
+        <MavenRunnerParameters>
+          <option name="cmdOptions" />
+          <option name="profiles">
+            <set />
+          </option>
+          <option name="goals">
+            <list>
+              <option value="spring-boot:run" />
+            </list>
+          </option>
+          <option name="multimoduleDir" />
+          <option name="pomFileName" />
+          <option name="profilesMap">
+            <map />
+          </option>
+          <option name="projectsCmdOptionValues">
+            <list />
+          </option>
+          <option name="resolveToWorkspace" value="false" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/auxiliary-services/hangout-service-discovery" />
+        </MavenRunnerParameters>
+      </option>
+    </MavenSettings>
+    <method v="2" />
   </configuration>
 </component>

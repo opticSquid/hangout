@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="hangout-posts-service" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="hangout-storage-service" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -11,7 +11,8 @@
           </option>
           <option name="goals">
             <list>
-              <option value="spring-boot:run" />
+              <option value="compile" />
+              <option value="quarkus:dev" />
             </list>
           </option>
           <option name="multimoduleDir" />
@@ -23,7 +24,7 @@
             <list />
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$/core-services/hangout-posts-service" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/core-services/hangout-storage-service" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>

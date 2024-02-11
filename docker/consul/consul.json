@@ -1,0 +1,10 @@
+{
+  "services": [
+    {
+      "id": "vendors-service",
+      "name": "vendors",
+      "address": "127.0.0.1",
+      "port": 5000
+    }
+  ]
+}
