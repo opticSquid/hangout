@@ -9,12 +9,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="hangout-storage-service" />
         <module name="hangout-posts-service" />
-        <module name="hangout-service-discovery" />
         <module name="hangout-gateway" />
         <module name="hangout-vendor-service" />
         <module name="hangout-auth-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hangout-service-discovery" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

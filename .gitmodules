@@ -1,6 +1,3 @@
-[submodule "auxiliary-services/hangout-service-discovery"]
-	path = auxiliary-services/hangout-service-discovery
-	url = https://github.com/opticSquid/hangout-service-discovery
 [submodule "auxiliary-services/hangout-gateway"]
 	path = auxiliary-services/hangout-gateway
 	url = https://github.com/opticSquid/hangout-gateway
