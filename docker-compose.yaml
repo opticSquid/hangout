@@ -50,7 +50,7 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=LISTENER_DOCKER_INTERNAL
       # Kafka Broker
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_LOG_RETENTION_MS=3600000
+      - KAFKA_CFG_LOG_RETENTION_HOURS=1
   # kafka UI
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
