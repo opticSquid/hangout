@@ -16,3 +16,6 @@
 [submodule "core-services/hangout-verification-service"]
 	path = core-services/hangout-verification-service
 	url = https://github.com/opticSquid/hangout-verification-service
+[submodule "core-services/hangout-notification-service"]
+	path = core-services/hangout-notification-service
+	url = https://github.com/opticSquid/hangout-notification-service.git

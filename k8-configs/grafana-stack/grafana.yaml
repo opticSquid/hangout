@@ -1,0 +1,5 @@
+imageRenderer:
+  enabled: true
+  # monitoring is the namespace
+  serverURL: "http://grafana-image-renderer.monitoring.svc.cluster.local:8080/render"
+  callbackURL: "http://grafana.monitoring.svc.cluster.local:3000/"
