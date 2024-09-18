@@ -6,31 +6,19 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=PkNLm@#2357
-      - POSTGRES_DB=vendors
     volumes:
       - geopostgresData:/var/lib/postgresql/data
 
   # service-mesh
-  consul-server:
-    image: hashicorp/consul:latest
-    volumes:
-#      - ./auxiliary-services/Consul/server1.json:/consul/config/server1.json
-#      - ./auxiliary-services/Consul/certs/:/consul/config/certs/
-#      - ./auxiliary-services/Consul/consul-acl.json:/consul/config/consul-acl.json
-#      - ./docker/consul/consul.json:/consul.json:ro
-      - consulServerData:/consul/data
-    ports:
-      - "5500:8500"
-      - "5600:8600/tcp"
-      - "5600:8600/udp"
-#    command: "server -dev"
+  # consul-server:
+  #   image: hashicorp/consul:latest
+  #   volumes:
+  #     - consulServerData:/consul/data
+  #   ports:
+  #     - "5500:8500"
+  #     - "5600:8600/tcp"
+  #     - "5600:8600/udp"
 
-  # event bus
-  # Log retention time !!!!required
-  # run in container shell (log retention: 1 min, max size: 500mb)
-  # open shell by docker exec -it hangout-Kafka-1 /bin/bash
-  # /opt/bitnami/kafka/bin/kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics
-  #  --entity-name verification-status --add-config retention.ms=60000,retention.bytes=524288000
   kafka:
     image: bitnami/kafka:latest
     ports:
@@ -51,11 +39,12 @@ services:
       # Kafka Broker
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
       - KAFKA_CFG_LOG_RETENTION_HOURS=1
+
   # kafka UI
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
     ports:
-      - "9000:9000"
+      - "9001:9000"
     environment:
       - KAFKA_BROKERCONNECT=kafka:19091
       - SERVER_SERVLET_CONTEXTPATH=/
@@ -71,7 +60,6 @@ services:
       - tempoData:/tmp
     ports:
       # - "14268"  # jaeger ingest
-      # - "9411:9411" # zipkin
       - "4318:4318"  # otlp http
       - "3200"   # grafana => tempo
       - "4317"  # otlp grpc

@@ -1,2 +1,3 @@
 #!/bin/bash
-helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka > start-kafka-output.log
+kubectl create namespace persistance
+helm install kafka --namespace persistance --values kafka.yaml oci://registry-1.docker.io/bitnamicharts/kafka > start-kafka-output.log
