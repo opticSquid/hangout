@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hangout-auth-service-configmap
+  labels:
+    app: hangout-auth-service
+data:
+  CLUSTER_URL: postgres-service.persistance.svc.cluster.local:5432
+  DB_NAME: authdb
+  KAFKA_SERVER: http://kafka.persistance.svc.cluster.local:9092
+  NOTIFICATION_SERVICE: http://hangout-notification-service:5012
+  LOKI_SERVER: http://loki-grafana-loki-ingester.monitoring:3100
+  LOG_DIR: /usr/src/app/logs/run
+
