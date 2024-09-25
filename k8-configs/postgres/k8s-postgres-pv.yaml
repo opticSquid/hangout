@@ -11,6 +11,6 @@ spec:
   accessModes:
     - ReadWriteMany
   capacity:
-    storage: 5Gi
+    storage: 1Gi
   hostPath:
     path: /data/postgresql

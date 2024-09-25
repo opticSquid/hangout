@@ -3,5 +3,3 @@ tempo:
     otlp:
       grpc: true
       http: true
-    jaeger:
-      grpc: true
