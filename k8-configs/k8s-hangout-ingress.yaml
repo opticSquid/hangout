@@ -2,8 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: hangout-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app: hangout-ingress
 spec:
   ingressClassName: nginx
   rules:

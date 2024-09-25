@@ -5,9 +5,10 @@ metadata:
   labels:
     app: hangout-auth-service
 data:
-  CLUSTER_URL: postgres-service.persistance.svc.cluster.local:5432
+  CLUSTER_URL: postgres.persistance:5432
   DB_NAME: authdb
-  KAFKA_SERVER: http://kafka.persistance.svc.cluster.local:9092
+  KAFKA_SERVER: http://kafka.persistance:9092
   NOTIFICATION_SERVICE: http://hangout-notification-service:5012
   LOKI_SERVER: http://loki-grafana-loki-distributor.monitoring:3100
+  TEMPO_SERVER: http://tempo-grafana-tempo-distributor.monitoring:4317
   LOG_DIR: /usr/src/app/logs

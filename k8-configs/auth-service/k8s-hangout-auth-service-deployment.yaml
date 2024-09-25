@@ -17,9 +17,10 @@ spec:
     spec:
       containers:  
       - name: hangout-auth-service
-        image: opticsquid/hangout-auth-service:1.1.0
+        image: opticsquid/hangout-auth-service:v1.1.0
         ports:
           - containerPort: 5011
+            protocol: TCP
         envFrom:
           - secretRef:
               name: hangout-auth-service-secret

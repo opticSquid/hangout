@@ -4,4 +4,4 @@ tempo:
       grpc: true
       http: true
     jaeger:
-      grpc: false
+      grpc: true
