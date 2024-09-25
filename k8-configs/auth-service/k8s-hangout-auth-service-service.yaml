@@ -5,7 +5,7 @@ metadata:
   labels:
     app: hangout-auth-service
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 5011
   selector:

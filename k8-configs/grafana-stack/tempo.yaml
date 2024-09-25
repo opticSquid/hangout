@@ -1,0 +1,7 @@
+tempo:
+  traces:
+    otlp:
+      grpc: true
+      http: true
+    jaeger:
+      grpc: false

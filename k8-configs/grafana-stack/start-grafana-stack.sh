@@ -11,6 +11,6 @@ helm install prometheus --values prometheus.yaml --namespace monitoring oci://re
 # install loki
 helm install loki --values loki.yaml --namespace monitoring oci://registry-1.docker.io/bitnamicharts/grafana-loki > loki.log
 # install tempo
-helm install tempo --namespace monitoring oci://registry-1.docker.io/bitnamicharts/grafana-tempo > tempo.log
+helm install tempo --values tempo.yaml --namespace monitoring oci://registry-1.docker.io/bitnamicharts/grafana-tempo > tempo.log
 # install grafana
 helm install grafana --values grafana.yaml --namespace monitoring oci://registry-1.docker.io/bitnamicharts/grafana > grafana.log

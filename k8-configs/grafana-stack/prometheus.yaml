@@ -1,16 +1,16 @@
 server:
   remoteWrite:
-    - url: http://grafana-mimir-gateway.svc.cluster.local/api/v1/push
+    - url: http://grafana-mimir-gateway.monitoring.svc.cluster.local/api/v1/push
       headers:
         X-Scope-OrgID: hangout
   # sample job config
   extraScrapeConfigs:
-    - job_name: wordpress
+    - job_name: hangout-java-apps-metrics
       kubernetes_sd_configs:
         - role: endpoints
           namespaces:
             names:
-            - default
+            - java-apps
       metrics_path: /metrics
       relabel_configs:
         - source_labels:

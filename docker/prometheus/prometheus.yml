@@ -7,37 +7,10 @@ scrape_configs:
       static_configs:
           - targets: ['host.docker.internal:9090']
 
-    - job_name: hangout-gateway
+    - job_name: hangout-auth-service
       metrics_path: /actuator/prometheus
-      consul_sd_configs:
-        - server: 'http://host.docker.internal:5500'
-          services:
-            - gateway
-          refresh_interval: 60s
-
-    - job_name: hangout-vendors
-      metrics_path: /vendors/actuator/prometheus
-      consul_sd_configs:
-        - server: 'http://host.docker.internal:5500'
-          services:
-            - vendor
-          refresh_interval: 60s
-
-    - job_name: hangout-posts
-      metrics_path: /posts/actuator/prometheus
-      consul_sd_configs:
-        - server: 'http://host.docker.internal:5500'
-          services:
-            - post
-          refresh_interval: 60s
-
-    - job_name: hangout-auths
-      metrics_path: /auths/actuator/prometheus
-      consul_sd_configs:
-        - server: 'http://host.docker.internal:5500'
-          services:
-            - auth
-          refresh_interval: 60s
+      static_configs:
+        - targets: ['host.docker.internal:5011']
 
     - job_name: hangout-storage
       metrics_path: /q/metrics

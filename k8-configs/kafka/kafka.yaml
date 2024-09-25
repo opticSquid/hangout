@@ -1,0 +1,13 @@
+# provisioning:
+#  topics:
+#    - account-verification
+#    - account-activation
+replicaCount: 1
+controller:
+  logPersistence:
+    enabled: true
+  resourcesPreset: micro
+  replicaCount: 1
+extraConfig: |-
+  log.retention.ms=3600000
+  auto.create.topics.enable=true
