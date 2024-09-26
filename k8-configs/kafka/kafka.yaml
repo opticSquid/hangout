@@ -2,12 +2,17 @@
 #  topics:
 #    - account-verification
 #    - account-activation
+
+# disable security
+listeners:
+  client:
+    protocol: PLAINTEXT
 replicaCount: 1
 controller:
   logPersistence:
     enabled: true
   resourcesPreset: micro
   replicaCount: 1
-extraConfig: |-
-  log.retention.ms=3600000
-  auto.create.topics.enable=true
+extraConfigYaml:
+  log.retention.ms: 3600000
+  auto.create.topics.enable: true

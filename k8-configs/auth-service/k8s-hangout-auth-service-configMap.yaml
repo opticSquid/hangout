@@ -12,3 +12,6 @@ data:
   LOKI_SERVER: http://loki-grafana-loki-distributor.monitoring:3100
   TEMPO_SERVER: http://tempo-grafana-tempo-distributor.monitoring:4317
   LOG_DIR: /usr/src/app/logs
+  # KAFKA_SECURITY_PROTOCOL: SASL_PLAINTEXT
+  # KAFKA_SASL_MECHANISM: SCRAM-SHA-256
+  # KAFKA_USER: user1
