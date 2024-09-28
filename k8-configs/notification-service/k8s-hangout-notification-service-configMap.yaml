@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hangout-notification-service-configmap
+  labels:
+    app: hangout-notification-service
+data:
+    SMTP_SERVICE: gmail
+    SMTP_HOST: smtp.gmail.com
+    SMTP_PORT: "465"
+    SMTP_ISSECURE: "true"
+    SMTP_USERNAME: soumalyabhattacharya6@gmail.com
+    MAIL_CONFIRMATION_URL: http://192.168.49.2:5011/auth/v1/public/verify?token=
+    port: "5012"
+    KAFKA_SERVER: kafka.persistance:9092
+    OTEL_TRACES_EXPORTER: otlp
+    OTEL_LOGS_EXPORTER: tlp
+    OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+    OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo-grafana-tempo-distributor.monitoring:4317
+
