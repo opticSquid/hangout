@@ -8,13 +8,13 @@ scrape_configs:
           - targets: ['host.docker.internal:9090']
 
     - job_name: hangout-auth-service
-      metrics_path: /actuator/prometheus
+      metrics_path: /auth/actuator/prometheus
       static_configs:
         - targets: ['host.docker.internal:5011']
 
-    - job_name: hangout-storage
+    - job_name: hangout-storage-service
       metrics_path: /q/metrics
       static_configs:
         - targets: ['host.docker.internal:9000']
-      scrape_interval: 30s
+      # scrape_interval: 30s
 
