@@ -10,7 +10,7 @@ data:
     SMTP_PORT: "465"
     SMTP_ISSECURE: "true"
     SMTP_USERNAME: soumalyabhattacharya6@gmail.com
-    MAIL_CONFIRMATION_URL: http://192.168.49.2:5011/auth/v1/public/verify?token=
+    MAIL_CONFIRMATION_URL: http://192.168.49.2/auth/v1/public/verify?token=
     port: "5012"
     KAFKA_SERVER: kafka.persistance:9092
     OTEL_TRACES_EXPORTER: otlp

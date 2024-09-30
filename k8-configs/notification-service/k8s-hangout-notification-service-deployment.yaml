@@ -15,9 +15,10 @@ spec:
       labels:
         app: hangout-notification-service
     spec:
-      containers:  
+      containers:
       - name: hangout-notification-service
-        image: opticsquid/hangout-notification-service:v1.0.1
+        image: opticsquid/hangout-notification-service:v1.0.4
+        imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 5012
             protocol: TCP
@@ -26,3 +27,10 @@ spec:
               name: hangout-notification-service-secret
           - configMapRef:
               name: hangout-notification-service-configmap
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "100Mi"
+          limits:
+            cpu: "120m"
+            memory: "300Mi"
