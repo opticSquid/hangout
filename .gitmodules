@@ -1,15 +1,9 @@
-[submodule "auxiliary-services/hangout-gateway"]
-	path = auxiliary-services/hangout-gateway
-	url = https://github.com/opticSquid/hangout-gateway
 [submodule "core-services/hangout-auth-service"]
 	path = core-services/hangout-auth-service
 	url = https://github.com/opticSquid/hangout-auth-service
 [submodule "core-services/hangout-posts-service"]
 	path = core-services/hangout-posts-service
 	url = https://github.com/opticSquid/hangout-posts-service
-[submodule "core-services/hangout-storage-service"]
-	path = core-services/hangout-storage-service
-	url = https://github.com/opticSquid/hangout-storage-service
 [submodule "core-services/hangout-vendor-service"]
 	path = core-services/hangout-vendor-service
 	url = https://github.com/opticSquid/hangout-vendor-service
@@ -19,3 +13,9 @@
 [submodule "core-services/hangout-notification-service"]
 	path = core-services/hangout-notification-service
 	url = https://github.com/opticSquid/hangout-notification-service.git
+[submodule "core-services/hangout-storage-service"]
+	path = core-services/hangout-storage-service
+	url = https://github.com/opticSquid/hangout-storage-service.git
+[submodule "app"]
+	path = app
+	url = https://github.com/opticSquid/hangout-android-app.git

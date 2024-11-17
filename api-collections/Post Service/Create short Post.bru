@@ -1,0 +1,25 @@
+meta {
+  name: Create short Post
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{post_base_url}}/post/short
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "postDescription": ""
+  }
+}
+
+body:multipart-form {
+  files: @file(/home/soumalya/Videos/sample/Noisestorm - Crab Rave (Official Music Video).mp4)
+}

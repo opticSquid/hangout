@@ -1,0 +1,22 @@
+meta {
+  name: Renew Token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{auth_base_url}}/public/renew
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "token": "{{refresh_token}}"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("access_token",res.body.accessToken);
+  bru.setEnvVar("refresh_token",res.body.refreshToken);
+}

@@ -96,7 +96,7 @@ services:
       
   # dashboard
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:latest
     # volumes:
       # - ./docker/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
     environment:

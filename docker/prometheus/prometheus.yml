@@ -1,20 +1,24 @@
 global:
-    scrape_interval: 60s
-    evaluation_interval: 90s
+  scrape_interval: 60s
+  evaluation_interval: 90s
 
 scrape_configs:
-    - job_name: 'prometheus'
-      static_configs:
-          - targets: ['host.docker.internal:9090']
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["host.docker.internal:9090"]
 
-    - job_name: hangout-auth-service
-      metrics_path: /auth/actuator/prometheus
-      static_configs:
-        - targets: ['host.docker.internal:5011']
+  - job_name: hangout-auth-service
+    metrics_path: /auth/actuator/prometheus
+    static_configs:
+      - targets: ["host.docker.internal:5011"]
 
-    - job_name: hangout-storage-service
-      metrics_path: /q/metrics
-      static_configs:
-        - targets: ['host.docker.internal:9000']
-      # scrape_interval: 30s
+  - job_name: hangout-content-service
+    metrics_path: /content/actuator/prometheus
+    static_configs:
+      - targets: ["host.docker.internal:5013"]
 
+  - job_name: hangout-storage-service
+    metrics_path: /q/metrics
+    static_configs:
+      - targets: ["host.docker.internal:9000"]
+    # scrape_interval: 30s
