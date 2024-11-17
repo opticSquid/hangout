@@ -1,0 +1,26 @@
+meta {
+  name: Create full Post
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{post_base_url}}/post/full
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "postDescription": ""
+  }
+}
+
+body:multipart-form {
+  postDescription: test post
+  files: @file(/home/soumalya/Downloads/Home Screen.png|/home/soumalya/Downloads/leetcode badge.png)
+}

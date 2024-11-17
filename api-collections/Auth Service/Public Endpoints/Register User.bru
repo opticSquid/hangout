@@ -1,0 +1,19 @@
+meta {
+  name: Register User
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{auth_base_url}}/public/signup
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "king-baby",
+    "email": "soumalya2018@outlook.com",
+    "password": "PkNLm@&$2357"
+  }
+}

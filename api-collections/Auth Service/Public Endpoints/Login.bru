@@ -1,0 +1,23 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{auth_base_url}}/public/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "king-baby",
+    "password": "PkNLm@&$2357"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("access_token",res.body.accessToken);
+  bru.setEnvVar("refresh_token",res.body.refreshToken);
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Delete Account
+  type: http
+  seq: 1
+}
+
+delete {
+  url: {{auth_base_url}}/user
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4eiIsImlhdCI6MTcyMzkyMjMzNCwiZXhwIjoxNzIzOTIyNjM0fQ.JzBo7clE8_Gl4NVFkhEbEV3EfRqMxYD29_GQRbsWMbw
+}
