@@ -1,6 +1,6 @@
 # Hangout
 
-![Hangout Logo](./logo.jpg)
+<img src="./logo.jpg" style="width:500px;object-fit:contain" alt="Logo Image">
 
 ## Introduction
 
