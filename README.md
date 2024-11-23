@@ -1,5 +1,7 @@
 # Hangout
 
+![Hangout Logo](./logo.jpg)
+
 ## Introduction
 
 This is a social media app that lets you find the best locations for hanging out with your friends and family helping you spend a quality time and experience  while taking into account your taste, your location and your budget range.
@@ -20,9 +22,8 @@ We can provide you with different data points
   - their budget range
 - About your business
   - users can very easily avail your services whenever they want to
-  - you can directly engage with our user base with photos and videos as you like promoting your offerings and they would be prominently visible to the users.
+  - you can directly engage with our user base in form of posts(text, photos, short videos or any combination of these three) promoting your offerings and they would be prominently visible to the users with a button to avail your services.
   - engaging with users will help build better relationship with your customers and help increase the amount of returning and new customers.
-  - sales performance compared to an aggeregated data about other similar businesses operating in your area.
-  - customer base they are catering to
+  - you can compare your business performance data (sales, customer demographics, new and returning customers) with aggregated data of other similar businesses in your area.
 
 This all will help your design and tailor your offerings better to boost your business.
