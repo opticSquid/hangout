@@ -1,0 +1,48 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        
+processors:
+  batch:
+
+exporters:
+  # debug:
+  #   verbosity: detailed
+  #   sampling_thereafter: 2
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    const_labels:
+      origin: otel-collector
+  # this is tempo
+  otlp:
+    endpoint: hangout-tempo-1:4316
+    tls:
+      insecure: true
+  loki:
+    endpoint: "http://hangout-loki-1:3100/loki/api/v1/push"
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      # exporters: [prometheus, debug]
+      exporters: [prometheus]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      # exporters: [zipkin, otlp/jaeger, otlp, debug]
+      exporters: [otlp]
+    logs:
+      receivers: [otlp]
+      exporters: [loki]
