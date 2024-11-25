@@ -52,6 +52,7 @@ services:
     extra_hosts: ['host.docker.internal:host-gateway']
     command:
       - --enable-feature=exemplar-storage
+      - --enable-feature=native-histograms
       - --config.file=/etc/prometheus/prometheus.yml
       - --web.enable-remote-write-receiver
       - --storage.tsdb.retention.time=1h
@@ -70,7 +71,7 @@ services:
       - tempoData:/tmp
     ports:
       - "3200:3200"   # grafana => tempo
-      - "4316"  # otlp grpc
+      - "4317"  # otlp grpc
     depends_on:
       - prometheus
       - loki
@@ -93,7 +94,6 @@ services:
 
   # observability data collector
   otel-collector:
-    container_name: otel-collector
     image: otel/opentelemetry-collector-contrib
     command:
       - --config=/etc/otelcol-contrib/config.yaml

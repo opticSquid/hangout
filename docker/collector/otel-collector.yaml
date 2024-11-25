@@ -5,21 +5,21 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-        
+
 processors:
   batch:
 
 exporters:
-  # debug:
-  #   verbosity: detailed
-  #   sampling_thereafter: 2
+  debug:
+    verbosity: detailed
+    # sampling_thereafter: 2
   prometheus:
     endpoint: 0.0.0.0:8889
     const_labels:
       origin: otel-collector
   # this is tempo
   otlp:
-    endpoint: hangout-tempo-1:4316
+    endpoint: "http://hangout-tempo-1:4317"
     tls:
       insecure: true
   loki:

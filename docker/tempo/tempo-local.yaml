@@ -7,7 +7,6 @@ distributor:
             protocols:
                 http:
                 grpc:
-                  endpoint: 0.0.0.0:4316
 
 # ingester:
 #   max_block_duration: 5m
@@ -24,16 +23,16 @@ metrics_generator:
     storage:
         path: /tmp/tempo/generator/wal
         remote_write:
-            - url: http://prometheus:9090/api/v1/write
+            - url: http://hangout-prometheus-1:9090/api/v1/write
               send_exemplars: true
     traces_storage:
         path: /var/tempo/generator/traces
 
 storage:
     trace:
-        backend: local                     # backend configuration to use
+        backend: local # backend configuration to use
         wal:
-            path: /tmp/tempo/wal             # where to store the wal locally
+            path: /tmp/tempo/wal # where to store the wal locally
         local:
             path: /tmp/tempo/blocks
 
@@ -41,8 +40,8 @@ overrides:
     defaults:
         metrics_generator:
             # enables metrics generator
-            processors: 
-              - service-graphs
-              - span-metrics
-              - local-blocks 
+            processors:
+                - service-graphs
+                - span-metrics
+                - local-blocks
             generate_native_histograms: both
