@@ -1,8 +1,6 @@
 receivers:
   otlp:
     protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
 
@@ -12,7 +10,6 @@ processors:
 exporters:
   debug:
     verbosity: detailed
-    # sampling_thereafter: 2
   prometheus:
     endpoint: 0.0.0.0:8889
     const_labels:
