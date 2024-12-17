@@ -1,9 +1,9 @@
-[submodule "core-services/hangout-auth-service"]
-	path = core-services/hangout-auth-service
-	url = https://github.com/opticSquid/hangout-auth-service
-[submodule "core-services/hangout-posts-service"]
-	path = core-services/hangout-posts-service
-	url = https://github.com/opticSquid/hangout-posts-service
+[submodule "core-services/hangout-auth-api"]
+	path = core-services/hangout-auth-api
+	url = https://github.com/opticSquid/hangout-auth-api.git
+[submodule "core-services/hangout-posts-api"]
+	path = core-services/hangout-posts-api
+	url = https://github.com/opticSquid/hangout-post-api.git
 [submodule "core-services/hangout-vendor-service"]
 	path = core-services/hangout-vendor-service
 	url = https://github.com/opticSquid/hangout-vendor-service
