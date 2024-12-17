@@ -1,13 +1,13 @@
 meta {
-  name: Renew Token
+  name: Trust Device
   type: http
-  seq: 3
+  seq: 4
 }
 
 post {
-  url: {{auth_base_url}}/public/renew
-  body: json
-  auth: none
+  url: {{auth_base_url}}/user/trust-device
+  body: none
+  auth: bearer
 }
 
 headers {
@@ -16,10 +16,8 @@ headers {
   Screen-Width: 1080
 }
 
-body:json {
-  {
-    "token": "{{refresh_token}}"
-  }
+auth:bearer {
+  token: {{access_token}}
 }
 
 script:post-response {
