@@ -61,6 +61,9 @@ services:
       - prometheusData:/prometheus
     ports:
       - "9090:9090"
+    depends_on:
+      - otel-collector
+
 
   # traces
   tempo:
@@ -73,6 +76,7 @@ services:
       - "3200:3200"   # grafana => tempo
       - "4317"  # otlp grpc
     depends_on:
+      - otel-collector
       - prometheus
       - loki
 
@@ -91,6 +95,8 @@ services:
       - JAEGER_ENDPOINT=http://tempo:14268/api/traces # send traces to Tempo
       - JAEGER_SAMPLER_TYPE=const
       - JAEGER_SAMPLER_PARAM=1
+    depends_on:
+      - otel-collector
 
   # observability data collector
   otel-collector:
@@ -106,10 +112,6 @@ services:
       - "13133:13133" # health_check extension
       - "4318:4318" # OTLP HTTP receiver
       - "55679:55679" # zpages extension
-    depends_on:
-      - prometheus
-      - tempo
-      - loki
 
   # dashboard
   grafana:
@@ -129,7 +131,8 @@ services:
 
   ## own services
   auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v1.2.1
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.0.2
+    # image: test/hangout-auth-api:v2.0.1
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=userdb
@@ -139,13 +142,37 @@ services:
       - ACCESS_TOKEN_SECRET=u_UGqxTQ2BvLbhkeo2B0QV-Hq6GqWzPyqwgSrXLgL7JCtp6SXWU9L1BKjEDSStAb2sZdy0iKrLU6z8MIEZze3CbhjXQfDUW7WtMEpv1yEmWdPoijGtiVLELF-5yaUYgVVrPVKNFv7xqIVH5sDl0VQ6El4d0v013qJ0j75UyZQtvGHjUMEmTE0H7iMf2yC19HBAGKzuwraZvNzLUStzLLcbRA6jlrnWqGyHfVBkoCjR2-Dtzom84yI20wk44xxC7NdrII40fZobLq856lQxewOCMXPG4U6sx_XuFwon9p1n0I-rrItcMj_lQHhPf-Z2lXnM05_DlXcu7LE4v2NdUjUw
       - REFRESH_TOKEN_SECRET=kTYpg95oeqgnBhfi16DYSe2NT2T6kXPDKGrLeXpSA2rc7Jltt32AtYGPdmsYFoKt0H2_dJj8RPgbP3UGzD6ONSDJOWbbMvSU1MyNDM2xj5ncv2oN1iewNXz6gEyTdeuR3IolmGnPBPFVZR78is6MnS7W7WBpRvQCoaes9l7GhMHf6MhtX4nstm9LkTUx5-MQw4Tg5XTgo82FApVcg1x9hvDno6WTci_gJ9874xsAi5wg9V15cXFTesJ3GJfGf4NTkX9SqqAVG_D08oLOXFAXjvLDYVrl_O_9JMyCBgVEyMV81UMw8v72nYGAfDPy2uH3nTUOTXA4qlijAXOFGxV7kg
       - NOTIFICATION_SERVICE=http://localhost:5012
-      - OTEL_COLLECTOR=http://hangout-otel-collector-1:4317
+      - IP_API_URL=http://ip-api.com
+      - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
       - LOG_DIR=/logs
+      - INTERNAL_SERVICES_ORIGIN=post-api
     ports:
       - 5011:5011
     volumes:
       - ./core-services/hangout-auth-api/logs:/logs
+    depends_on:
+      - otel-collector
+      - kafka
 
+  post-api:
+    image: test/hangout-post-api:v1.0.6
+    environment:
+      - DB_URL=hangout-geo-postgres-1:5432
+      - DB_NAME=postdb
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=PkNLm@#2357
+      - KAFKA_SERVER=hangout-kafka-1:9092
+      - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
+      - AUTH_SERVICE=http://hangout-auth-api-1:5011/auth/v1/user/validate
+      - STORAGE_PATH=/storage
+      - LOG_DIR=/logs
+    ports:
+      - 5013:5013
+    volumes:
+      - ./core-services/hangout-post-api/logs:/logs
+      - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/hangout-upload-path:/storage
+    depends_on:
+      - otel-collector
 
 volumes:
   geopostgresData:
@@ -157,4 +184,6 @@ volumes:
   tempoData:
     driver: local
   lokiData:
+    driver: local
+  mediaUploadPath:
     driver: local
