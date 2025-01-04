@@ -144,7 +144,7 @@ services:
       - IP_API_URL=http://ip-api.com
       - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
       - LOG_DIR=/logs
-      - INTERNAL_SERVICES_ORIGIN=post-api, hangout-notification-service
+      - INTERNAL_SERVICES_ORIGIN=post-api, hangout-notification-service, localhost
     ports:
       - 5011:5011
     volumes:
@@ -155,7 +155,8 @@ services:
       - kafka
     
   notification-service:
-    image: ghcr.io/opticsquid/hangout-notification-service:v1.0.4
+    image: ghcr.io/opticsquid/hangout-notification-service:v1.0.5
+    # image: test/hangout-notification-service:1.0.5
     environment:
       - SMTP_SERVICE=gmail
       - SMTP_HOST=smtp.gmail.com
@@ -163,7 +164,7 @@ services:
       - SMTP_ISSECURE=true
       - SMTP_USERNAME=soumalyabhattacharya6@gmail.com
       - SMTP_PASSWORD=eswwhaiitvmwzrkq
-      - MAIL_CONFIRMATION_URL=http://hangout-auth-api-1:5011/auth/v1/public/verify?token=
+      - MAIL_CONFIRMATION_URL=http://localhost:80/auth/v1/public/verify?token=
       - JWT_PRIVATE_KEY=e4a9952baf6705504223b438926848471d3321161460310bd2e85d8d3d10058a7ece8fe93eaae260af8dc1182ca6bd9635f67801e834c4af0c29e50db6ab05b302b4ea2b8e2c4841ee6f59cd649009a02881e6e66f90d0e4031f9e9defef03cd9c34f65feadc4819f1004f760f712c81f5ed67e6f82ee0c2de88974c46ae6577
       - port=5012
       - KAFKA_SERVER=hangout-kafka-1:19091
