@@ -140,11 +140,11 @@ services:
       - KAFKA_SERVER=hangout-kafka-1:19091
       - ACCESS_TOKEN_SECRET=u_UGqxTQ2BvLbhkeo2B0QV-Hq6GqWzPyqwgSrXLgL7JCtp6SXWU9L1BKjEDSStAb2sZdy0iKrLU6z8MIEZze3CbhjXQfDUW7WtMEpv1yEmWdPoijGtiVLELF-5yaUYgVVrPVKNFv7xqIVH5sDl0VQ6El4d0v013qJ0j75UyZQtvGHjUMEmTE0H7iMf2yC19HBAGKzuwraZvNzLUStzLLcbRA6jlrnWqGyHfVBkoCjR2-Dtzom84yI20wk44xxC7NdrII40fZobLq856lQxewOCMXPG4U6sx_XuFwon9p1n0I-rrItcMj_lQHhPf-Z2lXnM05_DlXcu7LE4v2NdUjUw
       - REFRESH_TOKEN_SECRET=kTYpg95oeqgnBhfi16DYSe2NT2T6kXPDKGrLeXpSA2rc7Jltt32AtYGPdmsYFoKt0H2_dJj8RPgbP3UGzD6ONSDJOWbbMvSU1MyNDM2xj5ncv2oN1iewNXz6gEyTdeuR3IolmGnPBPFVZR78is6MnS7W7WBpRvQCoaes9l7GhMHf6MhtX4nstm9LkTUx5-MQw4Tg5XTgo82FApVcg1x9hvDno6WTci_gJ9874xsAi5wg9V15cXFTesJ3GJfGf4NTkX9SqqAVG_D08oLOXFAXjvLDYVrl_O_9JMyCBgVEyMV81UMw8v72nYGAfDPy2uH3nTUOTXA4qlijAXOFGxV7kg
-      - NOTIFICATION_SERVICE=http://localhost:5012
+      - NOTIFICATION_SERVICE=http://hangout-notification-service-1:5012
       - IP_API_URL=http://ip-api.com
       - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
       - LOG_DIR=/logs
-      - INTERNAL_SERVICES_ORIGIN=post-api, localhost
+      - INTERNAL_SERVICES_ORIGIN=post-api, hangout-notification-service
     ports:
       - 5011:5011
     volumes:
@@ -153,6 +153,30 @@ services:
       - geo-postgres
       - otel-collector
       - kafka
+    
+  notification-service:
+    image: ghcr.io/opticsquid/hangout-notification-service:v1.0.4
+    environment:
+      - SMTP_SERVICE=gmail
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_ISSECURE=true
+      - SMTP_USERNAME=soumalyabhattacharya6@gmail.com
+      - SMTP_PASSWORD=eswwhaiitvmwzrkq
+      - MAIL_CONFIRMATION_URL=http://hangout-auth-api-1:5011/auth/v1/public/verify?token=
+      - JWT_PRIVATE_KEY=e4a9952baf6705504223b438926848471d3321161460310bd2e85d8d3d10058a7ece8fe93eaae260af8dc1182ca6bd9635f67801e834c4af0c29e50db6ab05b302b4ea2b8e2c4841ee6f59cd649009a02881e6e66f90d0e4031f9e9defef03cd9c34f65feadc4819f1004f760f712c81f5ed67e6f82ee0c2de88974c46ae6577
+      - port=5012
+      - KAFKA_SERVER=hangout-kafka-1:19091
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://hangout-otel-collector-1:4318
+    ports:
+      - 5012:5012
+    depends_on:
+      - kafka
+      - otel-collector
+      - auth-api
 
   post-api:
     image: ghcr.io/opticsquid/hangout-post-api:v1.0.9
@@ -208,9 +232,11 @@ services:
     volumes:
       - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
+      - auth-api
       - post-api
       - storage-service
       - media-server
+      - notification-service
 
 volumes:
   geopostgresData:
