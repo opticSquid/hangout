@@ -16,3 +16,9 @@
 [submodule "app"]
 	path = app
 	url = https://github.com/opticSquid/hangout-android-app.git
+[submodule "hangout-web"]
+	path = hangout-web
+	url = https://github.com/opticSquid/hangout-web.git
+[submodule "core-services/hangout-media-server"]
+	path = core-services/hangout-media-server
+	url = https://github.com/opticSquid/hangout-media-server.git

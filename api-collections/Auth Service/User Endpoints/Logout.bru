@@ -19,3 +19,8 @@ headers {
 auth:bearer {
   token: {{access_token}}
 }
+
+script:post-response {
+  bru.setEnvVar("access_token",undefined);
+  bru.setEnvVar("refresh_token",undefined);
+}
