@@ -62,6 +62,14 @@ services:
       - "4318:4318" # OTLP HTTP receiver
       - "55679:55679" # zpages extension
 
+  # reverse-proxy for own services    
+  gateway:
+    image: nginx:1.27
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+
   # own services
   auth-api:
     image: ghcr.io/opticsquid/hangout-auth-api:v2.0.4
@@ -86,6 +94,7 @@ services:
       - geo-postgres
       - otel-collector
       - kafka
+      - gateway
 
   notification-service:
     image: ghcr.io/opticsquid/hangout-notification-service:v1.0.5
@@ -109,7 +118,6 @@ services:
     depends_on:
       - kafka
       - otel-collector
-      - auth-api
 
   post-api:
     image: ghcr.io/opticsquid/hangout-post-api:v1.0.9
@@ -129,10 +137,10 @@ services:
       - ./core-services/hangout-post-api/logs:/logs
       - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/hangout-upload-path:/upload
     depends_on:
-      - auth-api
       - geo-postgres
       - otel-collector
       - kafka
+      - gateway
 
   storage-service:
     image: ghcr.io/opticsquid/hangout-storage-service:v1.0.6
@@ -160,19 +168,8 @@ services:
     volumes:
       - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/hangout-storage-path:/usr/share/nginx/html/media
       - ./core-services/hangout-media-server/nginx.conf:/etc/nginx/conf.d/default.conf
-
-  gateway:
-    image: nginx:1.27
-    ports:
-      - 80:80
-    volumes:
-      - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - auth-api
-      - post-api
-      - storage-service
-      - media-server
-      - notification-service
+      - gateway
 
   # kafka UI
   kafdrop:
