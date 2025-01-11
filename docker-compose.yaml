@@ -34,6 +34,14 @@ services:
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
       - KAFKA_CFG_LOG_RETENTION_HOURS=1
 
+# reverse-proxy for own services    
+  gateway:
+    image: nginx:1.27
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+
   # storage
   minio:
     image: quay.io/minio/minio
@@ -46,6 +54,8 @@ services:
     environment:
       - MINIO_ROOT_USER=ROOTUSER
       - MINIO_ROOT_PASSWORD=CHANGEME123
+    depends_on:
+      - gateway
 
   # observability data collector
   otel-collector:
@@ -61,14 +71,6 @@ services:
       - "13133:13133" # health_check extension
       - "4318:4318" # OTLP HTTP receiver
       - "55679:55679" # zpages extension
-
-  # reverse-proxy for own services    
-  gateway:
-    image: nginx:1.27
-    ports:
-      - 80:80
-    volumes:
-      - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
 
   # own services
   auth-api:
@@ -120,7 +122,7 @@ services:
       - otel-collector
 
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.0.9
+    image: ghcr.io/opticsquid/hangout-post-api:v1.1.1
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=postdb
@@ -129,21 +131,24 @@ services:
       - KAFKA_SERVER=hangout-kafka-1:19091
       - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
       - AUTH_SERVICE=http://hangout-auth-api-1:5011
-      - STORAGE_PATH=/upload
       - LOG_DIR=/logs
+      - MINIO_SERVER=http://hangout-minio-1:9000
+      - MINIO_ACCESS_KEY=IevColMiX5eBAZUPmfN6
+      - MINIO_SECRET_KEY=G8HC3uphX1TlDDYSxtjTrFSVdRe95XJXV2IhqEYg
+      - UPLOAD_BUCKET=hangout-upload-path
     ports:
       - 5013:5013
     volumes:
       - ./core-services/hangout-post-api/logs:/logs
-      - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/hangout-upload-path:/upload
     depends_on:
       - geo-postgres
       - otel-collector
       - kafka
+      - minio
       - gateway
 
   storage-service:
-    image: ghcr.io/opticsquid/hangout-storage-service:v1.0.6
+    image: ghcr.io/opticsquid/hangout-storage-service:v1.0.9
     environment:
       - KAFKA_HOST=hangout-kafka-1
       - KAFKA_PORT=19091
@@ -153,23 +158,13 @@ services:
       - LOG_BACKEND=zerolog
       - PROCESS_POOLSTRENGTH=4
       - PROCESS_QUEUELENGTH=100
-      - PATH_UPLOAD=/upload
-      - PATH_STORAGE=/storage
-    volumes:
-      - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/hangout-upload-path:/upload
-      - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/hangout-storage-path:/storage
+      - MINIO_BASEURL=hangout-minio-1:9000
+      - MINIO_ACCESSKEY=vLmiqXs8DUB2jwocd14W
+      - MINIO_SECRETKEY=mK5ByFQJKbm2nsjBvyLmkggITrP0sdfSPbspvr45
+      - MINIO_UPLOADBUCKET=hangout-upload-path
+      - MINIO_STORAGEBUCKET=hangout-storage-path
     depends_on:
       - kafka
-
-  media-server:
-    image: nginx:1.27
-    ports:
-      - 5014:5014
-    volumes:
-      - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/hangout-storage-path:/usr/share/nginx/html/media
-      - ./core-services/hangout-media-server/nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - gateway
 
   # kafka UI
   kafdrop:
