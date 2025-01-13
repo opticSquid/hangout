@@ -47,6 +47,13 @@ services:
     environment:
       - MINIO_ROOT_USER=ROOTUSER
       - MINIO_ROOT_PASSWORD=CHANGEME123
+      - MINIO_PROMETHEUS_URL=http://hangout-prometheus-1:9090
+      - MINIO_AUDIT_KAFKA_ENABLE=on
+      - MINIO_AUDIT_KAFKA_BROKERS=hangout-kafka-1:19091
+      - MINIO_AUDIT_KAFKA_TOPIC=minio-audit-logs
+    depends_on:
+      - prometheus
+      - kafka
 
   # observability data collector
   otel-collector:
@@ -65,8 +72,7 @@ services:
 
   # * own services
   auth-api:
-    # image: ghcr.io/opticsquid/hangout-auth-api:v2.0.4
-    image: test/hangout-auth-api:v2.0.5
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.0.5
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=userdb
@@ -114,7 +120,7 @@ services:
       - otel-collector
 
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.1.1
+    image: ghcr.io/opticsquid/hangout-post-api:v1.1.3
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=postdb

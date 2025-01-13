@@ -1,0 +1,19 @@
+{
+ "Version": "2012-10-17",
+ "Statement": [
+  {
+   "Sid": "PostApiKeyPermissions",
+   "Effect": "Allow",
+   "Action": [
+    "s3:PutObject",
+    "s3:CreateBucket",
+    "s3:GetBucketLocation",
+    "s3:ListBucket"
+   ],
+   "Resource": [
+    "arn:aws:s3:::hangout-upload-path/*",
+    "arn:aws:s3:::hangout-upload-path"
+   ]
+  }
+ ]
+}
