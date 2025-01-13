@@ -1,11 +1,11 @@
 meta {
   name: Logout
   type: http
-  seq: 2
+  seq: 3
 }
 
 delete {
-  url: {{auth_base_url}}/user/logout
+  url: {{auth_base_url_original}}/user/logout
   body: none
   auth: bearer
 }

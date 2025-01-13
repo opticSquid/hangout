@@ -1,4 +1,5 @@
 services:
+  # * core internal services
   # database
   geo-postgres:
     image: postgis/postgis
@@ -34,14 +35,6 @@ services:
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
       - KAFKA_CFG_LOG_RETENTION_HOURS=1
 
-# reverse-proxy for own services    
-  gateway:
-    image: nginx:1.27
-    ports:
-      - 80:80
-    volumes:
-      - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
-
   # storage
   minio:
     image: quay.io/minio/minio
@@ -54,8 +47,6 @@ services:
     environment:
       - MINIO_ROOT_USER=ROOTUSER
       - MINIO_ROOT_PASSWORD=CHANGEME123
-    depends_on:
-      - gateway
 
   # observability data collector
   otel-collector:
@@ -72,9 +63,10 @@ services:
       - "4318:4318" # OTLP HTTP receiver
       - "55679:55679" # zpages extension
 
-  # own services
+  # * own services
   auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v2.0.4
+    # image: ghcr.io/opticsquid/hangout-auth-api:v2.0.4
+    image: test/hangout-auth-api:v2.0.5
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=userdb
@@ -87,16 +79,16 @@ services:
       - IP_API_URL=http://ip-api.com
       - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
       - LOG_DIR=/logs
-      - INTERNAL_SERVICES_ORIGIN=post-api, hangout-notification-service, localhost
+      - INTERNAL_SERVICES_ORIGIN=http://hangout-notification-service-1:5012,http://hangout-post-api-1:5013
+      - CLIENT_ORIGIN=http://localhost:3000
     ports:
       - 5011:5011
     volumes:
       - ./core-services/hangout-auth-api/logs:/logs
     depends_on:
       - geo-postgres
-      - otel-collector
       - kafka
-      - gateway
+      - otel-collector
 
   notification-service:
     image: ghcr.io/opticsquid/hangout-notification-service:v1.0.5
@@ -142,10 +134,9 @@ services:
       - ./core-services/hangout-post-api/logs:/logs
     depends_on:
       - geo-postgres
-      - otel-collector
       - kafka
       - minio
-      - gateway
+      - otel-collector
 
   storage-service:
     image: ghcr.io/opticsquid/hangout-storage-service:v1.0.9
@@ -165,7 +156,21 @@ services:
       - MINIO_STORAGEBUCKET=hangout-storage-path
     depends_on:
       - kafka
+      - minio
 
+  # reverse-proxy for own services
+  gateway:
+    image: nginx:1.27
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-api
+      - post-api
+      - minio
+
+  # * Ancillary Services
   # kafka UI
   kafdrop:
     image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
@@ -255,6 +260,4 @@ volumes:
   tempoData:
     driver: local
   lokiData:
-    driver: local
-  mediaUploadPath:
     driver: local
