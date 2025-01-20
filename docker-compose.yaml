@@ -86,7 +86,7 @@ services:
       - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
       - LOG_DIR=/logs
       - INTERNAL_SERVICES_ORIGIN=http://hangout-notification-service-1:5012,http://hangout-post-api-1:5013
-      - CLIENT_ORIGIN=http://localhost:3000
+      - CLIENT_ORIGIN=http://localhost:3000, http://10.42.0.172:3000
     ports:
       - 5011:5011
     volumes:
@@ -120,7 +120,7 @@ services:
       - otel-collector
 
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.1.3
+    image: ghcr.io/opticsquid/hangout-post-api:v1.1.6
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=postdb
@@ -134,6 +134,8 @@ services:
       - MINIO_ACCESS_KEY=IevColMiX5eBAZUPmfN6
       - MINIO_SECRET_KEY=G8HC3uphX1TlDDYSxtjTrFSVdRe95XJXV2IhqEYg
       - UPLOAD_BUCKET=hangout-upload-path
+      - CLIENT_ORIGINS=http://localhost:3000, http://10.42.0.172:3000
+      - PAGE_LENGTH=25
     ports:
       - 5013:5013
     volumes:
