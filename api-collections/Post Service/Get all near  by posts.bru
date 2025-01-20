@@ -1,0 +1,20 @@
+meta {
+  name: Get all near  by posts
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{post_base_url_original}}/post/near-me
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "lat": 22.583134876531723,
+    "lon": 88.4737841486895,
+    "searchRadius": 15000.00,
+    "pageNumber": 1
+  }
+}
