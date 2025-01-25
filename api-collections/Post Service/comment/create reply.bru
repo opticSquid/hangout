@@ -1,0 +1,23 @@
+meta {
+  name: create reply
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{post_base_url_original}}/comment/reply
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "postId": "5285faf1-d153-4247-8b93-dbd5b046e519",
+    "parentCommentId": "d81b66e2-fa30-47b3-a2e0-988bfc0398dd",
+    "comment": "reply comment 1"
+  }
+}

@@ -1,0 +1,22 @@
+meta {
+  name: create top level comment
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{post_base_url_original}}/comment
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "postId": "5285faf1-d153-4247-8b93-dbd5b046e519",
+    "comment": "test comment done to test comment 2"
+  }
+}

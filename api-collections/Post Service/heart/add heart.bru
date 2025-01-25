@@ -1,0 +1,21 @@
+meta {
+  name: add heart
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{post_base_url_original}}/heart
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "postId": "37f55c53-8e59-413b-a6b1-b350ca5cad58"
+  }
+}
