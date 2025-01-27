@@ -21,6 +21,6 @@ auth:bearer {
 }
 
 script:post-response {
-  bru.setEnvVar("access_token",undefined);
-  bru.setEnvVar("refresh_token",undefined);
+  bru.deleteEnvVar("access_token");
+  bru.deleteEnvVar("refresh_token");
 }

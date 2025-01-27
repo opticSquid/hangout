@@ -72,7 +72,7 @@ services:
 
   # * own services
   auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v2.0.5
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.1.0
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=userdb
@@ -80,7 +80,10 @@ services:
       - DB_PASSWORD=PkNLm@#2357
       - KAFKA_SERVER=hangout-kafka-1:19091
       - ACCESS_TOKEN_SECRET=u_UGqxTQ2BvLbhkeo2B0QV-Hq6GqWzPyqwgSrXLgL7JCtp6SXWU9L1BKjEDSStAb2sZdy0iKrLU6z8MIEZze3CbhjXQfDUW7WtMEpv1yEmWdPoijGtiVLELF-5yaUYgVVrPVKNFv7xqIVH5sDl0VQ6El4d0v013qJ0j75UyZQtvGHjUMEmTE0H7iMf2yC19HBAGKzuwraZvNzLUStzLLcbRA6jlrnWqGyHfVBkoCjR2-Dtzom84yI20wk44xxC7NdrII40fZobLq856lQxewOCMXPG4U6sx_XuFwon9p1n0I-rrItcMj_lQHhPf-Z2lXnM05_DlXcu7LE4v2NdUjUw
+      - ACCESS_TOKEN_EXPIRY=300000
       - REFRESH_TOKEN_SECRET=kTYpg95oeqgnBhfi16DYSe2NT2T6kXPDKGrLeXpSA2rc7Jltt32AtYGPdmsYFoKt0H2_dJj8RPgbP3UGzD6ONSDJOWbbMvSU1MyNDM2xj5ncv2oN1iewNXz6gEyTdeuR3IolmGnPBPFVZR78is6MnS7W7WBpRvQCoaes9l7GhMHf6MhtX4nstm9LkTUx5-MQw4Tg5XTgo82FApVcg1x9hvDno6WTci_gJ9874xsAi5wg9V15cXFTesJ3GJfGf4NTkX9SqqAVG_D08oLOXFAXjvLDYVrl_O_9JMyCBgVEyMV81UMw8v72nYGAfDPy2uH3nTUOTXA4qlijAXOFGxV7kg
+      - REFRESH_TOKEN_LONG_TERM_EXPIRY=604800000
+      - REFRESH_TOKEN_SHORT_TERM_EXPIRY=600000
       - NOTIFICATION_SERVICE=http://hangout-notification-service-1:5012
       - IP_API_URL=http://ip-api.com
       - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
@@ -120,7 +123,7 @@ services:
       - otel-collector
 
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.2.0
+    image: ghcr.io/opticsquid/hangout-post-api:v1.2.3
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=postdb
