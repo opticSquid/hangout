@@ -123,7 +123,7 @@ services:
       - otel-collector
 
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.2.3
+    image: ghcr.io/opticsquid/hangout-post-api:v1.2.4
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=postdb
@@ -145,7 +145,6 @@ services:
       - ORDER_DELETES=true
       - GENERATE_DB_STATISTICS=true
       - CONTENT_TOPIC=content
-      - COMMENT_TOPIC=comments
       - HEART_TOPIC=hearts
       - MAX_POLL_RECS=100
       - MIN_BYTES=1024

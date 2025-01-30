@@ -1,7 +1,5 @@
 #!/bin/bash
 kubectl create namespace persistance
-kubectl apply -f k8s-postgres-pv.yaml
-kubectl apply -f k8s-postgres-pvc.yaml
-kubectl apply -f k8s-postgres-secret.yaml
-kubectl apply -f k8s-postgres-deployment.yaml
-kubectl apply -f k8s-postgres-service.yaml
+kubectl apply -f k8s-secret.yaml
+kubectl apply -f k8s-statefulset.yaml
+kubectl apply -f k8s-service.yaml
