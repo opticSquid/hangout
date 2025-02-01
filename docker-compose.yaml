@@ -3,6 +3,8 @@ services:
   # database
   geo-postgres:
     image: postgis/postgis
+    deploy:
+      replicas: 1
     ports:
       - "5432:5432"
     environment:
@@ -13,6 +15,8 @@ services:
   # event bus
   kafka:
     image: bitnami/kafka:latest
+    deploy:
+      replicas: 0
     ports:
       - "9092:9092"
     volumes:
@@ -38,10 +42,12 @@ services:
   # storage
   minio:
     image: quay.io/minio/minio
-    command: server /data --console-address ":9001"
+    deploy:
+      replicas: 0
+    command: server /data --address ":9002" --console-address ":9003"
     ports:
-      - 9000:9000
-      - 9001:9001
+      - 9002:9002
+      - 9003:9003
     volumes:
       - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/minio-storage:/data
     environment:
@@ -58,6 +64,8 @@ services:
   # observability data collector
   otel-collector:
     image: otel/opentelemetry-collector-contrib
+    deploy:
+      replicas: 0
     command:
       - --config=/etc/otelcol-contrib/config.yaml
     volumes:
@@ -72,7 +80,9 @@ services:
 
   # * own services
   auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v2.0.5
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.1.0
+    deploy:
+      replicas: 0
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=userdb
@@ -80,13 +90,16 @@ services:
       - DB_PASSWORD=PkNLm@#2357
       - KAFKA_SERVER=hangout-kafka-1:19091
       - ACCESS_TOKEN_SECRET=u_UGqxTQ2BvLbhkeo2B0QV-Hq6GqWzPyqwgSrXLgL7JCtp6SXWU9L1BKjEDSStAb2sZdy0iKrLU6z8MIEZze3CbhjXQfDUW7WtMEpv1yEmWdPoijGtiVLELF-5yaUYgVVrPVKNFv7xqIVH5sDl0VQ6El4d0v013qJ0j75UyZQtvGHjUMEmTE0H7iMf2yC19HBAGKzuwraZvNzLUStzLLcbRA6jlrnWqGyHfVBkoCjR2-Dtzom84yI20wk44xxC7NdrII40fZobLq856lQxewOCMXPG4U6sx_XuFwon9p1n0I-rrItcMj_lQHhPf-Z2lXnM05_DlXcu7LE4v2NdUjUw
+      - ACCESS_TOKEN_EXPIRY=300000
       - REFRESH_TOKEN_SECRET=kTYpg95oeqgnBhfi16DYSe2NT2T6kXPDKGrLeXpSA2rc7Jltt32AtYGPdmsYFoKt0H2_dJj8RPgbP3UGzD6ONSDJOWbbMvSU1MyNDM2xj5ncv2oN1iewNXz6gEyTdeuR3IolmGnPBPFVZR78is6MnS7W7WBpRvQCoaes9l7GhMHf6MhtX4nstm9LkTUx5-MQw4Tg5XTgo82FApVcg1x9hvDno6WTci_gJ9874xsAi5wg9V15cXFTesJ3GJfGf4NTkX9SqqAVG_D08oLOXFAXjvLDYVrl_O_9JMyCBgVEyMV81UMw8v72nYGAfDPy2uH3nTUOTXA4qlijAXOFGxV7kg
+      - REFRESH_TOKEN_LONG_TERM_EXPIRY=604800000
+      - REFRESH_TOKEN_SHORT_TERM_EXPIRY=600000
       - NOTIFICATION_SERVICE=http://hangout-notification-service-1:5012
       - IP_API_URL=http://ip-api.com
       - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
       - LOG_DIR=/logs
       - INTERNAL_SERVICES_ORIGIN=http://hangout-notification-service-1:5012,http://hangout-post-api-1:5013
-      - CLIENT_ORIGIN=http://localhost:3000, http://10.42.0.172:3000
+      - CLIENT_ORIGIN=http://localhost:3000
     ports:
       - 5011:5011
     volumes:
@@ -98,6 +111,8 @@ services:
 
   notification-service:
     image: ghcr.io/opticsquid/hangout-notification-service:v1.0.5
+    deploy:
+      replicas: 0
     environment:
       - SMTP_SERVICE=gmail
       - SMTP_HOST=smtp.gmail.com
@@ -120,7 +135,9 @@ services:
       - otel-collector
 
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.1.6
+    image: ghcr.io/opticsquid/hangout-post-api:v1.2.4
+    deploy:
+      replicas: 0
     environment:
       - DB_URL=hangout-geo-postgres-1:5432
       - DB_NAME=postdb
@@ -130,12 +147,22 @@ services:
       - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
       - AUTH_SERVICE=http://hangout-auth-api-1:5011
       - LOG_DIR=/logs
-      - MINIO_SERVER=http://hangout-minio-1:9000
+      - MINIO_SERVER=http://hangout-minio-1:9002
       - MINIO_ACCESS_KEY=IevColMiX5eBAZUPmfN6
       - MINIO_SECRET_KEY=G8HC3uphX1TlDDYSxtjTrFSVdRe95XJXV2IhqEYg
       - UPLOAD_BUCKET=hangout-upload-path
-      - CLIENT_ORIGINS=http://localhost:3000, http://10.42.0.172:3000
+      - CLIENT_ORIGINS=http://localhost:3000
       - PAGE_LENGTH=25
+      - FORMAT_SQL=true
+      - DB_BATCH_SIZE=30
+      - ORDER_INSERTS=true
+      - ORDER_DELETES=true
+      - GENERATE_DB_STATISTICS=true
+      - CONTENT_TOPIC=content
+      - HEART_TOPIC=hearts
+      - MAX_POLL_RECS=100
+      - MIN_BYTES=1024
+      - MAX_WAIT_MS=10000
     ports:
       - 5013:5013
     volumes:
@@ -148,6 +175,8 @@ services:
 
   storage-service:
     image: ghcr.io/opticsquid/hangout-storage-service:v1.0.9
+    deploy:
+      replicas: 0
     environment:
       - KAFKA_HOST=hangout-kafka-1
       - KAFKA_PORT=19091
@@ -157,7 +186,7 @@ services:
       - LOG_BACKEND=zerolog
       - PROCESS_POOLSTRENGTH=4
       - PROCESS_QUEUELENGTH=100
-      - MINIO_BASEURL=hangout-minio-1:9000
+      - MINIO_BASEURL=hangout-minio-1:9002
       - MINIO_ACCESSKEY=vLmiqXs8DUB2jwocd14W
       - MINIO_SECRETKEY=mK5ByFQJKbm2nsjBvyLmkggITrP0sdfSPbspvr45
       - MINIO_UPLOADBUCKET=hangout-upload-path
@@ -169,6 +198,8 @@ services:
   # reverse-proxy for own services
   gateway:
     image: nginx:1.27
+    deploy:
+      replicas: 0
     ports:
       - 80:80
     volumes:
@@ -182,8 +213,10 @@ services:
   # kafka UI
   kafdrop:
     image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
+    deploy:
+      replicas: 0
     ports:
-      - "9002:9000"
+      - "9004:9000"
     environment:
       - KAFKA_BROKERCONNECT=kafka:19091
       - SERVER_SERVLET_CONTEXTPATH=/
@@ -193,6 +226,8 @@ services:
   # metrics and alerts
   prometheus:
     image: prom/prometheus
+    deploy:
+      replicas: 0
     # required for calling local servers from prometheus
     extra_hosts: ["host.docker.internal:host-gateway"]
     command:
@@ -209,24 +244,11 @@ services:
     depends_on:
       - otel-collector
 
-  # traces
-  tempo:
-    image: grafana/tempo
-    command: ["-config.file=/etc/tempo.yaml"]
-    volumes:
-      - ./docker/tempo/tempo-local.yaml:/etc/tempo.yaml:rw
-      - tempoData:/tmp
-    ports:
-      - "3200:3200" # grafana => tempo
-      - "4317" # otlp grpc
-    depends_on:
-      - otel-collector
-      - prometheus
-      - loki
-
   # logs
   loki:
     image: grafana/loki
+    deploy:
+      replicas: 0
     command: ["-config.file=/etc/loki/local-config.yaml"]
     ports:
       - "3100:3100" # http log recieve port
@@ -242,9 +264,28 @@ services:
     depends_on:
       - otel-collector
 
+  # traces
+  tempo:
+    image: grafana/tempo
+    deploy:
+      replicas: 0
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./docker/tempo/tempo-local.yaml:/etc/tempo.yaml:rw
+      - tempoData:/tmp
+    ports:
+      - "3200:3200" # grafana => tempo
+      - "4317" # otlp grpc
+    depends_on:
+      - otel-collector
+      - prometheus
+      - loki
+
   # dashboard
   grafana:
     image: grafana/grafana:latest
+    deploy:
+      replicas: 0
     # volumes:
     # - ./docker/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:rw
     environment:

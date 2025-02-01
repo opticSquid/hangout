@@ -1,0 +1,21 @@
+meta {
+  name: remove heart
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{post_base_url_original}}/heart
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "postId": "5285faf1-d153-4247-8b93-dbd5b046e519"
+  }
+}

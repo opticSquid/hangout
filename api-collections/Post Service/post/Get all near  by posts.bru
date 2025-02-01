@@ -4,7 +4,7 @@ meta {
   seq: 3
 }
 
-get {
+post {
   url: {{post_base_url_original}}/post/near-me
   body: json
   auth: none
@@ -12,9 +12,10 @@ get {
 
 body:json {
   {
-    "lat": 22.583134876531723,
-    "lon": 88.4737841486895,
-    "searchRadius": 15000.00,
+    "lat": 22.57110940121252, 
+    "lon": 88.47070354144353,
+    "minSearchRadius": 0.00,
+    "maxSearchRadius": 1000.00,
     "pageNumber": 1
   }
 }

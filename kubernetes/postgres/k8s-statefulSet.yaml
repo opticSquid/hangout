@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: persistance
+spec:
+  serviceName: "postgres"
+  replicas: 2 # Master + 1 replica
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      initContainers:
+        - name: create-replication-slot
+          image: postgis/postgis
+          command:
+            - "sh"
+            - "-c"
+            - |
+              echo "🚀 Modifying pg_hba.conf for replication..."
+              if [[ "$(hostname)" == "postgres-0" ]]; then
+                echo "Master detected"
+                # Create replication slot
+                PGPASSWORD=${POSTGRES_PASSWORD} psql -U ${POSTGRES_USER} -c "SELECT * FROM pg_create_physical_replication_slot('replica_slot');"
+              fi
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      containers:
+        - name: postgres
+          image: postgis/postgis
+          ports:
+            - containerPort: 5432
+              name: postgres
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d/init-script.sh
+              subPath: init-script.sh
+      volumes:
+        - name: init-script
+          configMap:
+            name: postgres-init-script
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi # Adjust size as needed
+        storageClassName: "standard" # Minikube's default StorageClass
