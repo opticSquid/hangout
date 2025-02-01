@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-api
+  labels:
+    app: auth-api
+data:
+  CLUSTER_URL: postgres.persistance.svc.cluster.local:5432
+  DB_NAME: userdb
+  KAFKA_SERVER: http://kafka.persistance.svc.cluster.local:9092
+  NOTIFICATION_SERVICE: http://hangout-notification-service:5012
+  REFRESH_TOKEN_LONG_TERM_EXPIRY: "604800000"
+  REFRESH_TOKEN_SHORT_TERM_EXPIRY: "600000"
+  IP_API_URL: http://ip-api.com
+  OTEL_COLLECTOR: http://hangout-otel-collector-1:4318
+  LOKI_SERVER: http://loki-grafana-loki-distributor.monitoring:3100
+  TEMPO_SERVER: http://tempo-grafana-tempo-distributor.monitoring:4317
+  LOG_DIR: /logs
