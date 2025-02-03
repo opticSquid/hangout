@@ -16,7 +16,7 @@ services:
   kafka:
     image: bitnami/kafka:latest
     deploy:
-      replicas: 0
+      replicas: 1
     ports:
       - "9092:9092"
     volumes:
@@ -43,19 +43,19 @@ services:
   minio:
     image: quay.io/minio/minio
     deploy:
-      replicas: 0
-    command: server /data --address ":9002" --console-address ":9003"
+      replicas: 1
+    command: server /data --console-address ":9001"
     ports:
-      - 9002:9002
-      - 9003:9003
+      - 9000:9000
+      - 9001:9001
     volumes:
-      - /media/soumalya/793f3da3-8908-48a8-a4ce-a638275951fa/minio-storage:/data
+      - minioData:/data
     environment:
       - MINIO_ROOT_USER=ROOTUSER
       - MINIO_ROOT_PASSWORD=CHANGEME123
-      - MINIO_PROMETHEUS_URL=http://hangout-prometheus-1:9090
+      - MINIO_PROMETHEUS_URL=http://prometheus:9090
       - MINIO_AUDIT_KAFKA_ENABLE=on
-      - MINIO_AUDIT_KAFKA_BROKERS=hangout-kafka-1:19091
+      - MINIO_AUDIT_KAFKA_BROKERS=kafka:19091
       - MINIO_AUDIT_KAFKA_TOPIC=minio-audit-logs
     depends_on:
       - prometheus
@@ -65,11 +65,11 @@ services:
   otel-collector:
     image: otel/opentelemetry-collector-contrib
     deploy:
-      replicas: 0
+      replicas: 1
     command:
       - --config=/etc/otelcol-contrib/config.yaml
     volumes:
-      - ./docker/collector/otel-collector.yaml:/etc/otelcol-contrib/config.yaml
+      - ./docker/collector/otel-collector-compose.yaml:/etc/otelcol-contrib/config.yaml
     ports:
       - "1888:1888" # pprof extension
       - "8888:8888" # Prometheus metrics exposed by the Collector
@@ -82,28 +82,28 @@ services:
   auth-api:
     image: ghcr.io/opticsquid/hangout-auth-api:v2.1.0
     deploy:
-      replicas: 0
+      replicas: 1
     environment:
-      - DB_URL=hangout-geo-postgres-1:5432
+      - DB_URL=geo-postgres:5432
       - DB_NAME=userdb
       - DB_USERNAME=postgres
       - DB_PASSWORD=PkNLm@#2357
-      - KAFKA_SERVER=hangout-kafka-1:19091
+      - KAFKA_SERVER=kafka:19091
       - ACCESS_TOKEN_SECRET=u_UGqxTQ2BvLbhkeo2B0QV-Hq6GqWzPyqwgSrXLgL7JCtp6SXWU9L1BKjEDSStAb2sZdy0iKrLU6z8MIEZze3CbhjXQfDUW7WtMEpv1yEmWdPoijGtiVLELF-5yaUYgVVrPVKNFv7xqIVH5sDl0VQ6El4d0v013qJ0j75UyZQtvGHjUMEmTE0H7iMf2yC19HBAGKzuwraZvNzLUStzLLcbRA6jlrnWqGyHfVBkoCjR2-Dtzom84yI20wk44xxC7NdrII40fZobLq856lQxewOCMXPG4U6sx_XuFwon9p1n0I-rrItcMj_lQHhPf-Z2lXnM05_DlXcu7LE4v2NdUjUw
       - ACCESS_TOKEN_EXPIRY=300000
       - REFRESH_TOKEN_SECRET=kTYpg95oeqgnBhfi16DYSe2NT2T6kXPDKGrLeXpSA2rc7Jltt32AtYGPdmsYFoKt0H2_dJj8RPgbP3UGzD6ONSDJOWbbMvSU1MyNDM2xj5ncv2oN1iewNXz6gEyTdeuR3IolmGnPBPFVZR78is6MnS7W7WBpRvQCoaes9l7GhMHf6MhtX4nstm9LkTUx5-MQw4Tg5XTgo82FApVcg1x9hvDno6WTci_gJ9874xsAi5wg9V15cXFTesJ3GJfGf4NTkX9SqqAVG_D08oLOXFAXjvLDYVrl_O_9JMyCBgVEyMV81UMw8v72nYGAfDPy2uH3nTUOTXA4qlijAXOFGxV7kg
       - REFRESH_TOKEN_LONG_TERM_EXPIRY=604800000
       - REFRESH_TOKEN_SHORT_TERM_EXPIRY=600000
-      - NOTIFICATION_SERVICE=http://hangout-notification-service-1:5012
+      - NOTIFICATION_SERVICE=http://notification-service:5012
       - IP_API_URL=http://ip-api.com
-      - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
+      - OTEL_COLLECTOR=http://otel-collector:4318
       - LOG_DIR=/logs
-      - INTERNAL_SERVICES_ORIGIN=http://hangout-notification-service-1:5012,http://hangout-post-api-1:5013
+      - INTERNAL_SERVICES_ORIGIN=http://notification-service:5012,http://post-api:5013
       - CLIENT_ORIGIN=http://localhost:3000
     ports:
       - 5011:5011
     volumes:
-      - ./core-services/hangout-auth-api/logs:/logs
+      - authApiLogs:/logs
     depends_on:
       - geo-postgres
       - kafka
@@ -112,7 +112,7 @@ services:
   notification-service:
     image: ghcr.io/opticsquid/hangout-notification-service:v1.0.5
     deploy:
-      replicas: 0
+      replicas: 1
     environment:
       - SMTP_SERVICE=gmail
       - SMTP_HOST=smtp.gmail.com
@@ -123,11 +123,11 @@ services:
       - MAIL_CONFIRMATION_URL=http://localhost:80/auth/v1/public/verify?token=
       - JWT_PRIVATE_KEY=e4a9952baf6705504223b438926848471d3321161460310bd2e85d8d3d10058a7ece8fe93eaae260af8dc1182ca6bd9635f67801e834c4af0c29e50db6ab05b302b4ea2b8e2c4841ee6f59cd649009a02881e6e66f90d0e4031f9e9defef03cd9c34f65feadc4819f1004f760f712c81f5ed67e6f82ee0c2de88974c46ae6577
       - port=5012
-      - KAFKA_SERVER=hangout-kafka-1:19091
+      - KAFKA_SERVER=kafka:19091
       - OTEL_TRACES_EXPORTER=otlp
       - OTEL_LOGS_EXPORTER=otlp
       - OTEL_EXPORTER_OTLP_PROTOCOL=http
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://hangout-otel-collector-1:4318
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
     ports:
       - 5012:5012
     depends_on:
@@ -137,17 +137,17 @@ services:
   post-api:
     image: ghcr.io/opticsquid/hangout-post-api:v1.2.4
     deploy:
-      replicas: 0
+      replicas: 1
     environment:
-      - DB_URL=hangout-geo-postgres-1:5432
+      - DB_URL=geo-postgres:5432
       - DB_NAME=postdb
       - DB_USERNAME=postgres
       - DB_PASSWORD=PkNLm@#2357
-      - KAFKA_SERVER=hangout-kafka-1:19091
-      - OTEL_COLLECTOR=http://hangout-otel-collector-1:4318
-      - AUTH_SERVICE=http://hangout-auth-api-1:5011
+      - KAFKA_SERVER=kafka:19091
+      - OTEL_COLLECTOR=http://otel-collector:4318
+      - AUTH_SERVICE=http://auth-api:5011
       - LOG_DIR=/logs
-      - MINIO_SERVER=http://hangout-minio-1:9002
+      - MINIO_SERVER=http://minio:9000
       - MINIO_ACCESS_KEY=IevColMiX5eBAZUPmfN6
       - MINIO_SECRET_KEY=G8HC3uphX1TlDDYSxtjTrFSVdRe95XJXV2IhqEYg
       - UPLOAD_BUCKET=hangout-upload-path
@@ -166,7 +166,7 @@ services:
     ports:
       - 5013:5013
     volumes:
-      - ./core-services/hangout-post-api/logs:/logs
+      - postApiLogs:/logs
     depends_on:
       - geo-postgres
       - kafka
@@ -176,9 +176,9 @@ services:
   storage-service:
     image: ghcr.io/opticsquid/hangout-storage-service:v1.0.9
     deploy:
-      replicas: 0
+      replicas: 1
     environment:
-      - KAFKA_HOST=hangout-kafka-1
+      - KAFKA_HOST=kafka
       - KAFKA_PORT=19091
       - KAFKA_TOPIC=content
       - KAFKA_GROUPID=hangout-storage-service
@@ -186,7 +186,7 @@ services:
       - LOG_BACKEND=zerolog
       - PROCESS_POOLSTRENGTH=4
       - PROCESS_QUEUELENGTH=100
-      - MINIO_BASEURL=hangout-minio-1:9002
+      - MINIO_BASEURL=minio:9002
       - MINIO_ACCESSKEY=vLmiqXs8DUB2jwocd14W
       - MINIO_SECRETKEY=mK5ByFQJKbm2nsjBvyLmkggITrP0sdfSPbspvr45
       - MINIO_UPLOADBUCKET=hangout-upload-path
@@ -203,7 +203,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/gateway/nginx-compose.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - auth-api
       - post-api
@@ -214,11 +214,11 @@ services:
   kafdrop:
     image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
     deploy:
-      replicas: 0
+      replicas: 1
     ports:
       - "9004:9000"
     environment:
-      - KAFKA_BROKERCONNECT=kafka:19091
+      - KAFKA_BROKERCONNECT=tasks.kafka:19091
       - SERVER_SERVLET_CONTEXTPATH=/
     depends_on:
       - kafka
@@ -227,7 +227,7 @@ services:
   prometheus:
     image: prom/prometheus
     deploy:
-      replicas: 0
+      replicas: 1
     # required for calling local servers from prometheus
     extra_hosts: ["host.docker.internal:host-gateway"]
     command:
@@ -237,7 +237,7 @@ services:
       - --web.enable-remote-write-receiver
       - --storage.tsdb.retention.time=1h
     volumes:
-      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:rw
+      - ./docker/prometheus/prometheus-compose.yml:/etc/prometheus/prometheus.yml:rw
       - prometheusData:/prometheus
     ports:
       - "9090:9090"
@@ -306,7 +306,13 @@ volumes:
     driver: local
   prometheusData:
     driver: local
+  minioData:
+    driver: local
   tempoData:
     driver: local
   lokiData:
+    driver: local
+  authApiLogs:
+    driver: local
+  postApiLogs:
     driver: local
