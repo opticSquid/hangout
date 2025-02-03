@@ -1,1 +1,5 @@
 *.log
+
+docker-stack.yaml
+*-stack.*
+
