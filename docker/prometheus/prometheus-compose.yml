@@ -11,7 +11,7 @@ scrape_configs:
   - job_name: "otel-collector"
     static_configs:
       - targets:
-          - hangout-otel-collector-1:8889
+          - otel-collector:8889
 
   - job_name: hangout-storage-service
     metrics_path: /q/metrics
@@ -26,4 +26,4 @@ scrape_configs:
     scheme: http
     static_configs:
       - targets:
-          - hangout-minio-1:9000
+          - minio:9000

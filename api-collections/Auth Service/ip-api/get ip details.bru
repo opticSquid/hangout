@@ -1,0 +1,16 @@
+meta {
+  name: get ip details
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://ip-api.com/json/?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,timezone,currency,isp,org,as,asname,mobile,proxy,hosting&lang=en
+  body: none
+  auth: none
+}
+
+params:query {
+  fields: status,message,continent,continentCode,country,countryCode,region,regionName,city,timezone,currency,isp,org,as,asname,mobile,proxy,hosting
+  lang: en
+}

@@ -80,7 +80,7 @@ services:
 
   # * own services
   auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v2.1.0
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.1.4
     deploy:
       replicas: 1
     environment:
@@ -148,8 +148,8 @@ services:
       - AUTH_SERVICE=http://auth-api:5011
       - LOG_DIR=/logs
       - MINIO_SERVER=http://minio:9000
-      - MINIO_ACCESS_KEY=IevColMiX5eBAZUPmfN6
-      - MINIO_SECRET_KEY=G8HC3uphX1TlDDYSxtjTrFSVdRe95XJXV2IhqEYg
+      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
+      - MINIO_SECRET_KEY=iBfNydMCIC1KT4qBAj8RB8kaMLpXZ5yI41CTf6Ox
       - UPLOAD_BUCKET=hangout-upload-path
       - CLIENT_ORIGINS=http://localhost:3000
       - PAGE_LENGTH=25
@@ -187,8 +187,8 @@ services:
       - PROCESS_POOLSTRENGTH=4
       - PROCESS_QUEUELENGTH=100
       - MINIO_BASEURL=minio:9002
-      - MINIO_ACCESSKEY=vLmiqXs8DUB2jwocd14W
-      - MINIO_SECRETKEY=mK5ByFQJKbm2nsjBvyLmkggITrP0sdfSPbspvr45
+      - MINIO_ACCESSKEY=Gj1SIAPXZXLpeQhXcFkB
+      - MINIO_SECRETKEY=8mEGtBk0rQW91E0zjWxU9XzaQuVJbwLSPRJwPguO
       - MINIO_UPLOADBUCKET=hangout-upload-path
       - MINIO_STORAGEBUCKET=hangout-storage-path
     depends_on:
@@ -199,7 +199,7 @@ services:
   gateway:
     image: nginx:1.27
     deploy:
-      replicas: 0
+      replicas: 1
     ports:
       - 80:80
     volumes:
