@@ -1,0 +1,20 @@
+meta {
+  name: Create Profile
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{profile_base_url_dev}}/profile
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:multipart-form {
+  name: Soumalya Bhattacharya
+  profile-picture: @file(/home/soumalya/Downloads/81k974mPmwL.jpg)
+}

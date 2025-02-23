@@ -16,11 +16,11 @@ exporters:
       origin: otel-collector
   # this is tempo
   otlp:
-    endpoint: "http://hangout-tempo-1:4317"
+    endpoint: tempo:4317
     tls:
       insecure: true
   loki:
-    endpoint: "http://hangout-loki-1:3100/loki/api/v1/push"
+    endpoint: "http://loki:3100/loki/api/v1/push"
 
 extensions:
   health_check:

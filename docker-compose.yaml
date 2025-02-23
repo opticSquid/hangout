@@ -80,7 +80,7 @@ services:
 
   # * own services
   auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v2.1.0
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.1.4
     deploy:
       replicas: 1
     environment:
@@ -148,8 +148,8 @@ services:
       - AUTH_SERVICE=http://auth-api:5011
       - LOG_DIR=/logs
       - MINIO_SERVER=http://minio:9000
-      - MINIO_ACCESS_KEY=IevColMiX5eBAZUPmfN6
-      - MINIO_SECRET_KEY=G8HC3uphX1TlDDYSxtjTrFSVdRe95XJXV2IhqEYg
+      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
+      - MINIO_SECRET_KEY=iBfNydMCIC1KT4qBAj8RB8kaMLpXZ5yI41CTf6Ox
       - UPLOAD_BUCKET=hangout-upload-path
       - CLIENT_ORIGINS=http://localhost:3000
       - PAGE_LENGTH=25
@@ -186,20 +186,46 @@ services:
       - LOG_BACKEND=zerolog
       - PROCESS_POOLSTRENGTH=4
       - PROCESS_QUEUELENGTH=100
-      - MINIO_BASEURL=minio:9002
-      - MINIO_ACCESSKEY=vLmiqXs8DUB2jwocd14W
-      - MINIO_SECRETKEY=mK5ByFQJKbm2nsjBvyLmkggITrP0sdfSPbspvr45
+      - MINIO_BASEURL=minio:9000
+      - MINIO_ACCESSKEY=ITtpzgn9Q0UjIbi0D71V
+      - MINIO_SECRETKEY=ukUq1HHBUrjBXMEaTt55CilhNvvvEicnjT3SSqwH
       - MINIO_UPLOADBUCKET=hangout-upload-path
       - MINIO_STORAGEBUCKET=hangout-storage-path
     depends_on:
       - kafka
       - minio
 
+  profile-api:
+    image: ghcr.io/opticsquid/hangout-profile-api:v0.0.3
+    deploy:
+      replicas: 1
+    environment:
+      - DB_URL=geo-postgres:5432
+      - DB_NAME=profiledb
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=PkNLm@#2357
+      - KAFKA_SERVER=kafka:19091
+      - OTEL_COLLECTOR=http://otel-collector:4318
+      - MINIO_SERVER=http://minio:9000
+      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
+      - MINIO_SECRET_KEY=iBfNydMCIC1KT4qBAj8RB8kaMLpXZ5yI41CTf6Ox
+      - UPLOAD_BUCKET=hangout-upload-path
+      - CLIENT_ORIGINS=http://localhost:3000
+      - CONTENT_TOPIC=content
+      - AUTH_SERVICE=http://auth-api:5011
+    ports:
+      - 5014:5014
+    depends_on:
+      - geo-postgres
+      - kafka
+      - minio
+      - otel-collector
+
   # reverse-proxy for own services
   gateway:
     image: nginx:1.27
     deploy:
-      replicas: 0
+      replicas: 1
     ports:
       - 80:80
     volumes:
@@ -208,6 +234,7 @@ services:
       - auth-api
       - post-api
       - minio
+      - profile-api
 
   # * Ancillary Services
   # kafka UI
@@ -218,7 +245,7 @@ services:
     ports:
       - "9004:9000"
     environment:
-      - KAFKA_BROKERCONNECT=tasks.kafka:19091
+      - KAFKA_BROKERCONNECT=kafka:19091
       - SERVER_SERVLET_CONTEXTPATH=/
     depends_on:
       - kafka
@@ -248,11 +275,10 @@ services:
   loki:
     image: grafana/loki
     deploy:
-      replicas: 0
+      replicas: 1
     command: ["-config.file=/etc/loki/local-config.yaml"]
     ports:
       - "3100:3100" # http log recieve port
-      - "9095:9095" # grpc log recieve port
     volumes:
       - ./docker/loki/loki-local.yaml:/etc/loki/local-config.yaml:rw
       - lokiData:/loki
@@ -268,14 +294,14 @@ services:
   tempo:
     image: grafana/tempo
     deploy:
-      replicas: 0
+      replicas: 1
     command: ["-config.file=/etc/tempo.yaml"]
     volumes:
       - ./docker/tempo/tempo-local.yaml:/etc/tempo.yaml:rw
       - tempoData:/tmp
     ports:
-      - "3200:3200" # grafana => tempo
-      - "4317" # otlp grpc
+      - 3200 # grafana => tempo
+      - 4317 # otlp => tempo
     depends_on:
       - otel-collector
       - prometheus
@@ -285,13 +311,14 @@ services:
   grafana:
     image: grafana/grafana:latest
     deploy:
-      replicas: 0
+      replicas: 1
     # volumes:
     # - ./docker/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:rw
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
     ports:
       - "3000:3000"
     depends_on:

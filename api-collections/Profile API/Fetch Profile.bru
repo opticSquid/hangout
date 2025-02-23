@@ -1,0 +1,15 @@
+meta {
+  name: Fetch Profile
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{profile_base_url}}/profile
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
