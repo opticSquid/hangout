@@ -54,6 +54,7 @@ services:
       - MINIO_ROOT_USER=ROOTUSER
       - MINIO_ROOT_PASSWORD=CHANGEME123
       - MINIO_PROMETHEUS_URL=http://prometheus:9090
+      - MINIO_PROMETHEUS_JOB_ID=minio-job
       - MINIO_AUDIT_KAFKA_ENABLE=on
       - MINIO_AUDIT_KAFKA_BROKERS=kafka:19091
       - MINIO_AUDIT_KAFKA_TOPIC=minio-audit-logs
@@ -80,7 +81,7 @@ services:
 
   # * own services
   auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v2.1.4
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.1.5
     deploy:
       replicas: 1
     environment:
@@ -120,7 +121,7 @@ services:
       - SMTP_ISSECURE=true
       - SMTP_USERNAME=soumalyabhattacharya6@gmail.com
       - SMTP_PASSWORD=eswwhaiitvmwzrkq
-      - MAIL_CONFIRMATION_URL=http://localhost:80/auth/v1/public/verify?token=
+      - MAIL_CONFIRMATION_URL=http://localhost:80/auth-api/v1/public/verify?token=
       - JWT_PRIVATE_KEY=e4a9952baf6705504223b438926848471d3321161460310bd2e85d8d3d10058a7ece8fe93eaae260af8dc1182ca6bd9635f67801e834c4af0c29e50db6ab05b302b4ea2b8e2c4841ee6f59cd649009a02881e6e66f90d0e4031f9e9defef03cd9c34f65feadc4819f1004f760f712c81f5ed67e6f82ee0c2de88974c46ae6577
       - port=5012
       - KAFKA_SERVER=kafka:19091
@@ -135,7 +136,7 @@ services:
       - otel-collector
 
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.2.4
+    image: ghcr.io/opticsquid/hangout-post-api:v1.3.0
     deploy:
       replicas: 1
     environment:
@@ -196,7 +197,7 @@ services:
       - minio
 
   profile-api:
-    image: ghcr.io/opticsquid/hangout-profile-api:v0.0.3
+    image: ghcr.io/opticsquid/hangout-profile-api:v0.0.4
     deploy:
       replicas: 1
     environment:
@@ -241,7 +242,7 @@ services:
   kafdrop:
     image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
     deploy:
-      replicas: 1
+      replicas: 0
     ports:
       - "9004:9000"
     environment:
@@ -264,7 +265,7 @@ services:
       - --web.enable-remote-write-receiver
       - --storage.tsdb.retention.time=1h
     volumes:
-      - ./docker/prometheus/prometheus-compose.yml:/etc/prometheus/prometheus.yml:rw
+      - ./docker/prometheus/prometheus-compose.yml:/etc/prometheus/prometheus.yml:ro
       - prometheusData:/prometheus
     ports:
       - "9090:9090"
@@ -320,7 +321,7 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - prometheus
       - tempo

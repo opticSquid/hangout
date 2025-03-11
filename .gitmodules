@@ -22,3 +22,6 @@
 [submodule "core-services/hangout-profile-api"]
 	path = core-services/hangout-profile-api
 	url = https://github.com/opticSquid/hangout-profile-api.git
+[submodule "hangout-infra"]
+	path = hangout-infra
+	url = https://github.com/opticSquid/infra.git

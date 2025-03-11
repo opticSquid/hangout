@@ -13,10 +13,10 @@ scrape_configs:
       - targets:
           - otel-collector:8889
 
-  - job_name: minio-job
-    bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoiM0Z5a0REOHpaSFB4OHVLZ1BiQmYiLCJleHAiOjQ4OTAzNjUyNDd9.KR5rfkLKNH4vh7cARHxb_hMQTLJBFXVQaZouDCIMrSMzwknFYB-YPeoHyvFCln0gTZOZkJR8ynTzYfGO-vjxuA
+  - job_name: "minio-job"
+    bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoiNkNZZHpzRW5XU2l4VWR5a2lBYVQiLCJleHAiOjQ4OTQ4MzU1NDV9.KFlS4HDSTKerh9YarXuvBdfwBLbK-kK0zln6sG10w1bcwpfGzSfyDPN0RENzuSbD3gsI5rqCi8bReNLxNRWXOQ
     metrics_path: /minio/v2/metrics/cluster
     scheme: http
     static_configs:
       - targets:
-          - minio:9000
+          - host.docker.internal:9000
