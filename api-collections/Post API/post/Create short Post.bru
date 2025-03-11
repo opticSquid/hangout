@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{post_base_url}}/post/short
+  url: {{post_base_url_dev}}/post/short
   body: multipartForm
   auth: bearer
 }
@@ -21,9 +21,9 @@ body:json {
 }
 
 body:multipart-form {
-  file: @file(/home/soumalya/Downloads/SpaceX CAUGHT A ROCKET BOOSTER (Flight 7) [BVSoxGRTORw].mp4) @contentType(video/mp4)
-  lat: 22.57683005377206 @contentType(application/json)
-  lon: 88.46684283244318 @contentType(application/json)
-  state: West Bengal @contentType(application/json)
-  city: New Town @contentType(application/json)
+  state: West Bengal
+  city: New Town
+  lat: 22.57683005377206
+  lon: 88.46684283244318
+  file: @file(/home/soumalya/Downloads/1686320738188_ChhatrapatiShivajiMaharaj.jpg)
 }
