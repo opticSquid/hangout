@@ -1,9 +1,0 @@
-loki:
-  containerPorts:
-    http: 3100
-    grpc: 9095
-compactor:
-  service:
-    ports:
-      http: 3100
-      grpc: 9095

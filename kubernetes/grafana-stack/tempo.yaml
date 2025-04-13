@@ -1,8 +1,0 @@
-tempo:
-  traces:
-    otlp:
-      grpc: true
-      http: true
-ingester:
-  livenessProbe:
-    enabled: true
