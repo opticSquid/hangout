@@ -2,9 +2,13 @@ services:
   # * core internal services
   # database
   geo-postgres:
-    image: postgis/postgis
+    image: postgis/postgis:17-master
     deploy:
       replicas: 1
+      # resources:
+      #   limits:
+      #     cpus: 0.1
+      #     memory: 270M
     ports:
       - "5432:5432"
     environment:
@@ -14,7 +18,7 @@ services:
 
   # event bus
   kafka:
-    image: bitnami/kafka:latest
+    image: bitnami/kafka:4.0.0
     deploy:
       replicas: 1
     ports:
@@ -41,7 +45,7 @@ services:
 
   # storage
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-03-12T18-04-18Z
+    image: minio/minio:RELEASE.2025-05-24T17-08-30Z
     deploy:
       replicas: 1
     command: server /data --console-address ":9001"
@@ -64,7 +68,7 @@ services:
 
   # observability data collector
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.122.0
+    image: otel/opentelemetry-collector-contrib:0.127.0
     deploy:
       replicas: 1
     command:
@@ -86,7 +90,7 @@ services:
       replicas: 1
     environment:
       - DB_URL=geo-postgres:5432
-      - DB_NAME=userdb
+      - DB_NAME=users
       - DB_USERNAME=postgres
       - DB_PASSWORD=PkNLm@#2357
       - KAFKA_SERVER=kafka:19091
@@ -141,7 +145,7 @@ services:
       replicas: 1
     environment:
       - DB_URL=geo-postgres:5432
-      - DB_NAME=postdb
+      - DB_NAME=posts
       - DB_USERNAME=postgres
       - DB_PASSWORD=PkNLm@#2357
       - KAFKA_SERVER=kafka:19091
@@ -202,7 +206,7 @@ services:
       replicas: 1
     environment:
       - DB_URL=geo-postgres:5432
-      - DB_NAME=profiledb
+      - DB_NAME=profiles
       - DB_USERNAME=postgres
       - DB_PASSWORD=PkNLm@#2357
       - KAFKA_SERVER=kafka:19091
@@ -224,7 +228,7 @@ services:
 
   # reverse-proxy for own services
   gateway:
-    image: nginx:1.27
+    image: nginx:1.28.0
     deploy:
       replicas: 1
     ports:
@@ -253,7 +257,7 @@ services:
 
   # metrics and alerts
   prometheus:
-    image: prom/prometheus:v3.2.1
+    image: bitnami/prometheus:3.4.0
     deploy:
       replicas: 1
     # required for calling local servers from prometheus
@@ -274,7 +278,7 @@ services:
 
   # logs
   loki:
-    image: grafana/loki:main-2592e6a
+    image: grafana/loki:main-44b2c27
     deploy:
       replicas: 1
     command: ["-config.file=/etc/loki/local-config.yaml"]
@@ -293,7 +297,7 @@ services:
 
   # traces
   tempo:
-    image: grafana/tempo:main-e607202
+    image: grafana/tempo:main-b9a611e
     deploy:
       replicas: 1
     command: ["-config.file=/etc/tempo.yaml"]
@@ -310,7 +314,7 @@ services:
 
   # dashboard
   grafana:
-    image: grafana/grafana:11.5.2
+    image: grafana/grafana:12.0.1
     deploy:
       replicas: 1
     # volumes:
