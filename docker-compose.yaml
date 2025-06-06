@@ -211,6 +211,10 @@ services:
     image: ghcr.io/opticsquid/hangout-storage-service:v1.0.9
     deploy:
       replicas: 1
+      resources:
+        limits:
+          cpus: 0.8
+          memory: 2G
     environment:
       - KAFKA_HOST=kafka
       - KAFKA_PORT=19091
@@ -223,8 +227,8 @@ services:
       - MINIO_BASEURL=minio:9000
       - MINIO_ACCESSKEY=ITtpzgn9Q0UjIbi0D71V
       - MINIO_SECRETKEY=ukUq1HHBUrjBXMEaTt55CilhNvvvEicnjT3SSqwH
-      - MINIO_UPLOADBUCKET=hangout-upload-path
-      - MINIO_STORAGEBUCKET=hangout-storage-path
+      - MINIO_UPLOADBUCKET=upload
+      - MINIO_STORAGEBUCKET=processed
     depends_on:
       - kafka
       - minio
