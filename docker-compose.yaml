@@ -268,6 +268,10 @@ services:
     image: nginx:1.28.0
     deploy:
       replicas: 1
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 100M
     ports:
       - 80:80
     volumes:
