@@ -8,12 +8,12 @@ scrape_configs:
       - targets:
           - prometheus:9090
 
-  - job_name: "otel-collector"
+  - job_name: "open telemetry exported metrics"
     static_configs:
       - targets:
           - otel-collector:8889
 
-  - job_name: "kafka"
+  - job_name: "open telemetry collector metrics"
     static_configs:
       - targets:
-          - kafka:9095 # Target Kafka's metrics endpoint
+          - otel-collector:8888
