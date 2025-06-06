@@ -234,7 +234,7 @@ services:
       - minio
 
   profile-api:
-    image: ghcr.io/opticsquid/hangout-profile-api:v0.0.4
+    image: ghcr.io/opticsquid/hangout-profile-api:v1.0.0
     deploy:
       replicas: 1
       resources:
