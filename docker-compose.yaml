@@ -237,6 +237,10 @@ services:
     image: ghcr.io/opticsquid/hangout-profile-api:v0.0.4
     deploy:
       replicas: 1
+      resources:
+        limits:
+          cpus: 0.4
+          memory: 300M
     environment:
       - DB_URL=geo-postgres:5432
       - DB_NAME=profiles
@@ -247,7 +251,7 @@ services:
       - MINIO_SERVER=http://minio:9000
       - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
       - MINIO_SECRET_KEY=iBfNydMCIC1KT4qBAj8RB8kaMLpXZ5yI41CTf6Ox
-      - UPLOAD_BUCKET=hangout-upload-path
+      - UPLOAD_BUCKET=upload
       - CLIENT_ORIGINS=http://localhost:3000,http://192.168.1.3:3000
       - CONTENT_TOPIC=content
       - AUTH_SERVICE=http://auth-api:5011
