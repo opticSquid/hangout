@@ -11,8 +11,8 @@
     "s3:ListBucket"
    ],
    "Resource": [
-    "arn:aws:s3:::hangout-upload-path/*",
-    "arn:aws:s3:::hangout-upload-path"
+    "arn:aws:s3:::upload/*",
+    "arn:aws:s3:::upload"
    ]
   }
  ]

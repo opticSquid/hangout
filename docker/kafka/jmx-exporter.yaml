@@ -1,0 +1,14 @@
+rules:
+  - pattern: "kafka.server<type=(.+), name=(.+)PerSec\\w*><>Count"
+    name: "kafka_server_$1_$2_total"
+    type: COUNTER
+    labels:
+      clientId: "$3"
+
+  - pattern: "kafka.server<type=(.+), name=(.+)><>Value"
+    name: "kafka_server_$1_$2"
+    type: GAUGE
+
+  - pattern: "kafka.network<type=(.+), name=(.+)><>Count"
+    name: "kafka_network_$1_$2_total"
+    type: COUNTER
