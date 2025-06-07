@@ -125,7 +125,7 @@ services:
       - OTEL_COLLECTOR=http://otel-collector:4318
       - LOG_DIR=/logs
       - INTERNAL_SERVICES_ORIGIN=http://notification-service:5012,http://post-api:5013
-      - CLIENT_ORIGIN=http://localhost:3000,http://192.168.1.3:3000
+      - CLIENT_ORIGIN=http://localhost:8080/
     ports:
       - 5011:5011
     volumes:
@@ -171,7 +171,7 @@ services:
       resources:
         limits:
           cpus: 0.4
-          memory: 300M
+          memory: 325M
     environment:
       - DB_URL=geo-postgres:5432
       - DB_NAME=posts
@@ -185,7 +185,7 @@ services:
       - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
       - MINIO_SECRET_KEY=iBfNydMCIC1KT4qBAj8RB8kaMLpXZ5yI41CTf6Ox
       - UPLOAD_BUCKET=upload
-      - CLIENT_ORIGINS=http://localhost:3000,http://192.168.1.3:3000
+      - CLIENT_ORIGINS=http://localhost:8080/
       - PAGE_LENGTH=25
       - FORMAT_SQL=true
       - DB_BATCH_SIZE=30
@@ -252,7 +252,7 @@ services:
       - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
       - MINIO_SECRET_KEY=iBfNydMCIC1KT4qBAj8RB8kaMLpXZ5yI41CTf6Ox
       - UPLOAD_BUCKET=upload
-      - CLIENT_ORIGINS=http://localhost:3000,http://192.168.1.3:3000
+      - CLIENT_ORIGINS=http://localhost:8080/
       - CONTENT_TOPIC=content
       - AUTH_SERVICE=http://auth-api:5011
     ports:
@@ -271,7 +271,7 @@ services:
       resources:
         limits:
           cpus: 0.1
-          memory: 100M
+          memory: 50M
     ports:
       - 80:80
     volumes:
@@ -308,7 +308,7 @@ services:
       resources:
         limits:
           cpus: 0.1
-          memory: 384M
+          memory: 180M
     # required for calling local servers from prometheus
     extra_hosts: ["host.docker.internal:host-gateway"]
     command:
@@ -331,7 +331,7 @@ services:
       resources:
         limits:
           cpus: 0.1
-          memory: 100M
+          memory: 125M
     command: ["-config.file=/etc/loki/local-config.yaml"]
     ports:
       - "3100:3100" # http log recieve port
@@ -354,7 +354,7 @@ services:
       resources:
         limits:
           cpus: 0.1
-          memory: 150M
+          memory: 180M
     command: ["-config.file=/etc/tempo.yaml"]
     volumes:
       - ./docker/tempo/tempo-local.yaml:/etc/tempo.yaml:rw
@@ -384,7 +384,7 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
     ports:
-      - "3001:3000"
+      - "3000:3000"
     depends_on:
       - prometheus
       - tempo
