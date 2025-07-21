@@ -20,7 +20,7 @@ services:
   clickhouse:
     image: clickhouse:lts-jammy
     deploy:
-      replicas: 1
+      replicas: 0
       resources:
         limits:
           cpus: 0.1
@@ -116,6 +116,20 @@ services:
       - tempoData:/tmp
 
 # * layer 1 components - dependent on layer 0 compoenents
+  # container monitoring
+  cadvisor:
+    image: ghcr.io/google/cadvisor:v0.53.0
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    depends_on:
+      - prometheus
   # dashboard
   grafana:
     image: grafana/grafana:12.0.1
@@ -264,7 +278,7 @@ services:
   notification-service:
     image: ghcr.io/opticsquid/hangout-notification-service:v1.0.5
     deploy:
-      replicas: 1
+      replicas: 0
       resources:
         limits:
           cpus: 0.1
@@ -338,12 +352,12 @@ services:
 
   # user content processing
   storage-service:
-    image: ghcr.io/opticsquid/hangout-storage-service:v2.1.2
+    image: ghcr.io/opticsquid/hangout-storage-service:v2.1.3
     deploy:
-      replicas: 1
+      replicas: 2
       resources:
         limits:
-          # cpus: 0.8
+          cpus: 0.4
           memory: 2G
     environment:
       - HSS_APPLICATION_NAME=hangout-storage-service
