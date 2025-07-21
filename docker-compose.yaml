@@ -17,10 +17,14 @@ services:
       - geopostgresData:/var/lib/postgresql/data
 
   # analytics database
-  click-house:
+  clickhouse:
     image: clickhouse:lts-jammy
     deploy:
       replicas: 1
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 900M
     ports:
       - 18123:8123
       - 19000:9000
@@ -110,9 +114,6 @@ services:
     volumes:
       - ./docker/tempo/tempo-local.yaml:/etc/tempo.yaml:rw
       - tempoData:/tmp
-    ports:
-      - 3200 # grafana => tempo
-      - 4317 # otlp => tempo
 
 # * layer 1 components - dependent on layer 0 compoenents
   # dashboard
@@ -124,8 +125,8 @@ services:
         limits:
           cpus: 0.2
           memory: 350M
-    # volumes:
-    # - ./docker/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:rw
+    volumes:
+    - grafanaData:/var/lib/grafana
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -212,7 +213,7 @@ services:
   kafdrop:
     image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
     deploy:
-      replicas: 1
+      replicas: 0
       resources:
         limits:
           cpus: 0.15
@@ -294,7 +295,7 @@ services:
   post-api:
     image: ghcr.io/opticsquid/hangout-post-api:v1.5.3
     deploy:
-      replicas: 1
+      replicas: 2
       resources:
         limits:
           cpus: 0.4
@@ -337,12 +338,12 @@ services:
 
   # user content processing
   storage-service:
-    image: ghcr.io/opticsquid/hangout-storage-service:v2.1.0
+    image: ghcr.io/opticsquid/hangout-storage-service:v2.1.2
     deploy:
       replicas: 1
       resources:
         limits:
-          cpus: 0.8
+          # cpus: 0.8
           memory: 2G
     environment:
       - HSS_APPLICATION_NAME=hangout-storage-service
@@ -373,7 +374,7 @@ services:
   profile-api:
     image: ghcr.io/opticsquid/hangout-profile-api:v1.0.0
     deploy:
-      replicas: 1
+      replicas: 0
       resources:
         limits:
           cpus: 0.4
@@ -435,6 +436,8 @@ volumes:
   lokiData:
     driver: local
   tempoData:
+    driver: local
+  grafanaData:
     driver: local
   kafkaData:
     driver: local
