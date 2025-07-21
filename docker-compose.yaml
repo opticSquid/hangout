@@ -1,6 +1,6 @@
 services:
-  # * core internal services
-  # database
+  # * layer 0 components - no dependencies
+  # main database
   geo-postgres:
     image: postgis/postgis:17-master
     deploy:
@@ -12,54 +12,29 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=PkNLm@#2357
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - geopostgresData:/var/lib/postgresql/data
 
-  # event bus
-  kafka:
-    image: bitnami/kafka:4.0.0
+  # analytics database
+  click-house:
+    image: clickhouse:lts-jammy
     deploy:
       replicas: 1
-      resources:
-        limits:
-          cpus: 0.5
-          memory: 600M
     ports:
-      - "9092:9092"
-    volumes:
-      - kafkaData:/bitnami/kafka
-      - ./docker/kafka/jmx-exporter.yaml:/opt/bitnami/kafka/config/jmx-exporter.yaml
-      - ./docker/kafka/jmx_prometheus_javaagent-1.3.0.jar:/opt/bitnami/kafka/libs/jmx_prometheus_javaagent-1.3.0.jar
+      - 18123:8123
+      - 19000:9000
     environment:
-      # KRaft settings
-      - KAFKA_CFG_NODE_ID=0
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
-      # Listeners
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,LISTENER_DOCKER_INTERNAL://:19091
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092,LISTENER_DOCKER_INTERNAL://kafka:19091
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,LISTENER_DOCKER_INTERNAL:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=LISTENER_DOCKER_INTERNAL
-      # Kafka Broker settings
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_LOG_RETENTION_HOURS=1
-      # Consider setting default replication factor and partitions for a single node
-      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
-      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
-      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1 # For auto-created topics
-      - KAFKA_CFG_NUM_PARTITIONS=1             # For auto-created topics
-       # Enable Prometheus JMX Exporter via Bitnami specific env vars
-      - KAFKA_ENABLE_PROMETHEUS_METRICS=true
-      - KAFKA_PROMETHEUS_METRICS_PORT_NUMBER=9095 # Port Kafka will expose metrics on for Prometheus
-      - KAFKA_JMX_PORT=9095
-      - KAFKA_JMX_HOSTNAME=0.0.0.0
-      - KAFKA_JMX_ENABLE=true
-      - KAFKA_OPTS=-javaagent:/opt/bitnami/kafka/libs/jmx_prometheus_javaagent-1.3.0.jar=9095:/opt/bitnami/kafka/config/jmx-exporter.yaml
+     - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickHouseData:/var/lib/clickhouse/
+      - clickHouseLogs:/var/log/clickhouse-server/
 
-  # storage
+  # object storage
   minio:
     image: minio/minio:RELEASE.2025-05-24T17-08-30Z
     deploy:
@@ -76,229 +51,7 @@ services:
       - minioData:/data
     environment:
       - MINIO_ROOT_USER=ROOTUSER
-      - MINIO_ROOT_PASSWORD=CHANGEME123
-
-  # observability data collector
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.127.0
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: 0.3
-          memory: 300M
-    command:
-      - --config=/etc/otelcol-contrib/config.yaml
-    volumes:
-      - ./docker/collector/otel-collector-compose.yaml:/etc/otelcol-contrib/config.yaml
-    ports:
-      - "4318:4318" # OTLP HTTP receiver
-      - "8888:8888" # Prometheus metrics exposed by the Collector
-      - "8889:8889" # Prometheus exporter metrics
-      # - "1888:1888" # pprof extension
-      # - "13133:13133" # health_check extension
-      # - "55679:55679" # zpages extension
-
-
-  # * own services
-  auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v2.2.1
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: 0.4
-          memory: 300M
-    environment:
-      - DB_URL=geo-postgres:5432
-      - DB_NAME=users
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=PkNLm@#2357
-      - KAFKA_SERVER=kafka:19091
-      - ACCESS_TOKEN_SECRET=u_UGqxTQ2BvLbhkeo2B0QV-Hq6GqWzPyqwgSrXLgL7JCtp6SXWU9L1BKjEDSStAb2sZdy0iKrLU6z8MIEZze3CbhjXQfDUW7WtMEpv1yEmWdPoijGtiVLELF-5yaUYgVVrPVKNFv7xqIVH5sDl0VQ6El4d0v013qJ0j75UyZQtvGHjUMEmTE0H7iMf2yC19HBAGKzuwraZvNzLUStzLLcbRA6jlrnWqGyHfVBkoCjR2-Dtzom84yI20wk44xxC7NdrII40fZobLq856lQxewOCMXPG4U6sx_XuFwon9p1n0I-rrItcMj_lQHhPf-Z2lXnM05_DlXcu7LE4v2NdUjUw
-      - ACCESS_TOKEN_EXPIRY=300000
-      - REFRESH_TOKEN_SECRET=kTYpg95oeqgnBhfi16DYSe2NT2T6kXPDKGrLeXpSA2rc7Jltt32AtYGPdmsYFoKt0H2_dJj8RPgbP3UGzD6ONSDJOWbbMvSU1MyNDM2xj5ncv2oN1iewNXz6gEyTdeuR3IolmGnPBPFVZR78is6MnS7W7WBpRvQCoaes9l7GhMHf6MhtX4nstm9LkTUx5-MQw4Tg5XTgo82FApVcg1x9hvDno6WTci_gJ9874xsAi5wg9V15cXFTesJ3GJfGf4NTkX9SqqAVG_D08oLOXFAXjvLDYVrl_O_9JMyCBgVEyMV81UMw8v72nYGAfDPy2uH3nTUOTXA4qlijAXOFGxV7kg
-      - REFRESH_TOKEN_LONG_TERM_EXPIRY=604800000
-      - REFRESH_TOKEN_SHORT_TERM_EXPIRY=600000
-      - NOTIFICATION_SERVICE=http://notification-service:5012
-      - IP_API_URL=http://ip-api.com
-      - OTEL_COLLECTOR=http://otel-collector:4318
-      - LOG_DIR=/logs
-      - INTERNAL_SERVICES_ORIGIN=http://notification-service:5012,http://post-api:5013
-      - CLIENT_ORIGIN=http://localhost:8080/
-    ports:
-      - 5011:5011
-    volumes:
-      - authApiLogs:/logs
-    depends_on:
-      - geo-postgres
-      - kafka
-      - otel-collector
-
-  notification-service:
-    image: ghcr.io/opticsquid/hangout-notification-service:v1.0.5
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: 0.1
-          memory: 100M
-    environment:
-      - SMTP_SERVICE=gmail
-      - SMTP_HOST=smtp.gmail.com
-      - SMTP_PORT=465
-      - SMTP_ISSECURE=true
-      - SMTP_USERNAME=soumalyabhattacharya6@gmail.com
-      - SMTP_PASSWORD=eswwhaiitvmwzrkq
-      - MAIL_CONFIRMATION_URL=http://localhost:80/auth-api/v1/public/verify?token=
-      - JWT_PRIVATE_KEY=e4a9952baf6705504223b438926848471d3321161460310bd2e85d8d3d10058a7ece8fe93eaae260af8dc1182ca6bd9635f67801e834c4af0c29e50db6ab05b302b4ea2b8e2c4841ee6f59cd649009a02881e6e66f90d0e4031f9e9defef03cd9c34f65feadc4819f1004f760f712c81f5ed67e6f82ee0c2de88974c46ae6577
-      - port=5012
-      - KAFKA_SERVER=kafka:19091
-      - OTEL_TRACES_EXPORTER=otlp
-      - OTEL_LOGS_EXPORTER=otlp
-      - OTEL_EXPORTER_OTLP_PROTOCOL=http
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-    ports:
-      - 5012:5012
-    depends_on:
-      - kafka
-      - otel-collector
-
-  post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.3.0
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: 0.4
-          memory: 325M
-    environment:
-      - DB_URL=geo-postgres:5432
-      - DB_NAME=posts
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=PkNLm@#2357
-      - KAFKA_SERVER=kafka:19091
-      - OTEL_COLLECTOR=http://otel-collector:4318
-      - AUTH_SERVICE=http://auth-api:5011
-      - LOG_DIR=/logs
-      - MINIO_SERVER=http://minio:9000
-      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
-      - MINIO_SECRET_KEY=iBfNydMCIC1KT4qBAj8RB8kaMLpXZ5yI41CTf6Ox
-      - UPLOAD_BUCKET=upload
-      - CLIENT_ORIGINS=http://localhost:8080/
-      - PAGE_LENGTH=25
-      - FORMAT_SQL=true
-      - DB_BATCH_SIZE=30
-      - ORDER_INSERTS=true
-      - ORDER_DELETES=true
-      - GENERATE_DB_STATISTICS=true
-      - CONTENT_TOPIC=content
-      - HEART_TOPIC=hearts
-      - MAX_POLL_RECS=100
-      - MIN_BYTES=1024
-      - MAX_WAIT_MS=10000
-    ports:
-      - 5013:5013
-    volumes:
-      - postApiLogs:/logs
-    depends_on:
-      - geo-postgres
-      - kafka
-      - minio
-      - otel-collector
-
-  storage-service:
-    image: ghcr.io/opticsquid/hangout-storage-service:v1.0.9
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: 0.8
-          memory: 2G
-    environment:
-      - KAFKA_HOST=kafka
-      - KAFKA_PORT=19091
-      - KAFKA_TOPIC=content
-      - KAFKA_GROUPID=hangout-storage-service
-      - LOG_LEVEL=debug
-      - LOG_BACKEND=zerolog
-      - PROCESS_POOLSTRENGTH=4
-      - PROCESS_QUEUELENGTH=100
-      - MINIO_BASEURL=minio:9000
-      - MINIO_ACCESSKEY=ITtpzgn9Q0UjIbi0D71V
-      - MINIO_SECRETKEY=ukUq1HHBUrjBXMEaTt55CilhNvvvEicnjT3SSqwH
-      - MINIO_UPLOADBUCKET=upload
-      - MINIO_STORAGEBUCKET=processed
-    depends_on:
-      - kafka
-      - minio
-
-  profile-api:
-    image: ghcr.io/opticsquid/hangout-profile-api:v1.0.0
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: 0.4
-          memory: 300M
-    environment:
-      - DB_URL=geo-postgres:5432
-      - DB_NAME=profiles
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=PkNLm@#2357
-      - KAFKA_SERVER=kafka:19091
-      - OTEL_COLLECTOR=http://otel-collector:4318
-      - MINIO_SERVER=http://minio:9000
-      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
-      - MINIO_SECRET_KEY=iBfNydMCIC1KT4qBAj8RB8kaMLpXZ5yI41CTf6Ox
-      - UPLOAD_BUCKET=upload
-      - CLIENT_ORIGINS=http://localhost:8080/
-      - CONTENT_TOPIC=content
-      - AUTH_SERVICE=http://auth-api:5011
-    ports:
-      - 5014:5014
-    depends_on:
-      - geo-postgres
-      - kafka
-      - minio
-      - otel-collector
-
-  # reverse-proxy for own services
-  gateway:
-    image: nginx:1.28.0
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: 0.1
-          memory: 50M
-    ports:
-      - 80:80
-    volumes:
-      - ./docker/gateway/nginx-compose.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - auth-api
-      - post-api
-      - minio
-      - profile-api
-
-  # * Ancillary Services
-  # kafka UI
-  kafdrop:
-    image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
-    deploy:
-      replicas: 0
-      resources:
-        limits:
-          cpus: 0.15
-          memory: 350M
-    ports:
-      - "9004:9000"
-    environment:
-      - KAFKA_BROKERCONNECT=kafka:19091
-      - SERVER_SERVLET_CONTEXTPATH=/
-    depends_on:
-      - kafka
+      - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}
 
   # metrics and alerts
   prometheus:
@@ -343,8 +96,6 @@ services:
       - JAEGER_ENDPOINT=http://tempo:14268/api/traces # send traces to Tempo
       - JAEGER_SAMPLER_TYPE=const
       - JAEGER_SAMPLER_PARAM=1
-    depends_on:
-      - otel-collector
 
   # traces
   tempo:
@@ -362,11 +113,8 @@ services:
     ports:
       - 3200 # grafana => tempo
       - 4317 # otlp => tempo
-    depends_on:
-      - otel-collector
-      - prometheus
-      - loki
 
+# * layer 1 components - dependent on layer 0 compoenents
   # dashboard
   grafana:
     image: grafana/grafana:12.0.1
@@ -390,18 +138,305 @@ services:
       - tempo
       - loki
 
+  # observability data collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.127.0
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.3
+          memory: 300M
+    command:
+      - --config=/etc/otelcol-contrib/config.yaml
+    volumes:
+      - ./docker/collector/otel-collector-compose.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - "4318:4318" # OTLP HTTP receiver
+      - "4317:4317" # OTLP GRPCreciever
+      - "8888:8888" # Prometheus metrics exposed by the Collector
+      - "8889:8889" # Prometheus exporter metrics
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+
+# * layer 2 components - dependent on layer 0,1 components
+  # event bus
+  kafka:
+    image: bitnami/kafka:4.0.0
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 600M
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafkaData:/bitnami/kafka
+      - ./docker/kafka/jmx-exporter.yaml:/opt/bitnami/kafka/config/jmx-exporter.yaml
+      - ./docker/kafka/jmx_prometheus_javaagent-1.3.0.jar:/opt/bitnami/kafka/libs/jmx_prometheus_javaagent-1.3.0.jar
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,LISTENER_DOCKER_INTERNAL://:19091
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092,LISTENER_DOCKER_INTERNAL://kafka:19091
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,LISTENER_DOCKER_INTERNAL:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=LISTENER_DOCKER_INTERNAL
+      # Kafka Broker settings
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_LOG_RETENTION_HOURS=1
+      # Consider setting default replication factor and partitions for a single node
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1 # For auto-created topics
+      - KAFKA_CFG_NUM_PARTITIONS=20         # For auto-created topics
+       # Enable Prometheus JMX Exporter via Bitnami specific env vars
+      - KAFKA_ENABLE_PROMETHEUS_METRICS=true
+      - KAFKA_PROMETHEUS_METRICS_PORT_NUMBER=9095 # Port Kafka will expose metrics on for Prometheus
+      - KAFKA_JMX_PORT=9095
+      - KAFKA_JMX_HOSTNAME=0.0.0.0
+      - KAFKA_JMX_ENABLE=true
+      - KAFKA_OPTS=-javaagent:/opt/bitnami/kafka/libs/jmx_prometheus_javaagent-1.3.0.jar=9095:/opt/bitnami/kafka/config/jmx-exporter.yaml
+    depends_on:
+      - otel-collector
+
+# * layer 3 components - depends on layer 0,1,2 components
+  # kafka UI
+  kafdrop:
+    image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.15
+          memory: 350M
+    ports:
+      - "9004:9000"
+    environment:
+      - KAFKA_BROKERCONNECT=kafka:19091
+      - SERVER_SERVLET_CONTEXTPATH=/
+    depends_on:
+      - kafka
+
+  # authentication & authorization
+  auth-api:
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.4.0
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.4
+          memory: 300M
+    environment:
+      - DB_URL=geo-postgres:5432
+      - DB_NAME=users
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - KAFKA_SERVER=kafka:19091
+      - ACCESS_TOKEN_SECRET=${AUTH_API_ACCESS_TOKEN_SECRET}
+      - ACCESS_TOKEN_EXPIRY=300000
+      - REFRESH_TOKEN_SECRET=${AUTH_API_REFRESH_TOKEN_SECRET}
+      - REFRESH_TOKEN_LONG_TERM_EXPIRY=604800000
+      - REFRESH_TOKEN_SHORT_TERM_EXPIRY=600000
+      - NOTIFICATION_SERVICE=http://notification-service:5012
+      - IP_API_URL=http://ip-api.com
+      - OTEL_COLLECTOR=http://otel-collector:4317
+      - LOG_DIR=/logs
+      - INTERNAL_SERVICES_ORIGIN=http://notification-service:5012,http://post-api:5013
+      - CLIENT_ORIGIN=http://localhost:5173/
+      - COOKIE_DOMAIN=localhost
+    volumes:
+      - authApiLogs:/logs
+    depends_on:
+      - geo-postgres
+      - otel-collector
+      - kafka
+
+  # sending out notifications through different channels to users. (excluding push notifications)
+  notification-service:
+    image: ghcr.io/opticsquid/hangout-notification-service:v1.0.5
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 100M
+    environment:
+      - SMTP_SERVICE=gmail
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_ISSECURE=true
+      - SMTP_USERNAME=soumalyabhattacharya6@gmail.com
+      - SMTP_PASSWORD=${NOTIFICATION_SERVICE_SMTP_PASSWORD}
+      - MAIL_CONFIRMATION_URL=http://localhost:80/auth-api/v1/public/verify?token=
+      - JWT_PRIVATE_KEY=${NOTIFICATION_SERVICE_JWT_SECRET}
+      - port=5012
+      - KAFKA_SERVER=kafka:19091
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    ports:
+      - 5012:5012
+    depends_on:
+      - otel-collector
+      - kafka
+
+# * layer 4 components - depends on layer 0,1,2,3 components
+  # user content upload and fetch and content interactions
+  post-api:
+    image: ghcr.io/opticsquid/hangout-post-api:v1.5.3
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.4
+          memory: 325M
+    environment:
+      - DB_URL=geo-postgres:5432
+      - DB_NAME=posts
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - KAFKA_SERVER=kafka:19091
+      - OTEL_COLLECTOR=http://otel-collector:4317
+      - AUTH_SERVICE=http://auth-api:5011/auth-api/v1
+      - LOG_DIR=/logs
+      - MINIO_SERVER=http://minio:9000
+      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
+      - MINIO_SECRET_KEY=${POST_API_MINIO_KEY}
+      - UPLOAD_BUCKET=upload
+      - CLIENT_ORIGINS=http://localhost:5173/
+      - PAGE_LENGTH=25
+      - FORMAT_SQL=true
+      - DB_BATCH_SIZE=30
+      - ORDER_INSERTS=true
+      - ORDER_DELETES=true
+      - GENERATE_DB_STATISTICS=true
+      - CONTENT_TOPIC=content
+      - HEART_TOPIC=hearts
+      - MAX_POLL_RECS=100
+      - MIN_BYTES=1024
+      - MAX_WAIT_MS=10000
+      - ADDRESS_API_URL=https://api.geoapify.com
+      - ADDRESS_API_KEY=${POST_API_GEO_APIFY_KEY}
+    volumes:
+      - postApiLogs:/logs
+    depends_on:
+      - geo-postgres
+      - minio
+      - otel-collector
+      - kafka
+      - auth-api
+
+  # user content processing
+  storage-service:
+    image: ghcr.io/opticsquid/hangout-storage-service:v2.1.0
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.8
+          memory: 2G
+    environment:
+      - HSS_APPLICATION_NAME=hangout-storage-service
+      - HSS_KAFKA_URL=kafka:19091
+      - HSS_KAFKA_TOPIC=content
+      - HSS_KAFKA_GROUP-ID=hangout-storage-service
+      - HSS_LOG_LEVEL=debug
+      - HSS_MINIO_BASE-URL=minio:9000
+      - HSS_MINIO_ACCESS-KEY=ITtpzgn9Q0UjIbi0D71V
+      - HSS_MINIO_SECRET-KEY=${STORAGE_SERVICE_MINIO_KEY}
+      - HSS_MINIO_UPLOAD-BUCKET=upload
+      - HSS_MINIO_STORAGE-BUCKET=processed
+      - HSS_PROCESS_QUEUE-LENGTH=4
+      - HSS_PROCESS_POOL-STRENGTH=4
+      - HSS_DATASOURCE_USERNAME=postgres
+      - HSS_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - HSS_DATASOURCE_URL=geo-postgres:5432
+      - HSS_DATASOURCE_DBNAME=posts
+      - HSS_OTEL_ENDPOINT=otel-collector:4317
+    depends_on:
+      - geo-postgres
+      - minio
+      - otel-collector
+      - kafka
+      - post-api
+
+  # user profile and activity
+  profile-api:
+    image: ghcr.io/opticsquid/hangout-profile-api:v1.0.0
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.4
+          memory: 300M
+    environment:
+      - DB_URL=geo-postgres:5432
+      - DB_NAME=profiles
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - KAFKA_SERVER=kafka:19091
+      - OTEL_COLLECTOR=http://otel-collector:4318
+      - MINIO_SERVER=http://minio:9000
+      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
+      - MINIO_SECRET_KEY=${PROFILE_API_MINIO_KEY}
+      - UPLOAD_BUCKET=upload
+      - CLIENT_ORIGINS=http://localhost:8080/
+      - CONTENT_TOPIC=content
+      - AUTH_SERVICE=http://auth-api:5011
+    ports:
+      - 5014:5014
+    depends_on:
+      - geo-postgres
+      - minio
+      - otel-collector
+      - kafka
+      - auth-api
+
+# * layer 5 components - depends on layer 0,1,2,3,4 components
+  # reverse-proxy for own services
+  gateway:
+    image: nginx:1.28.0
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 50M
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/gateway/nginx-compose.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-api
+      - post-api
+      - minio
+      # - profile-api
+
 volumes:
   geopostgresData:
     driver: local
-  kafkaData:
+  clickHouseData:
     driver: local
-  prometheusData:
+  clickHouseLogs:
     driver: local
   minioData:
     driver: local
-  tempoData:
+  prometheusData:
     driver: local
   lokiData:
+    driver: local
+  tempoData:
+    driver: local
+  kafkaData:
     driver: local
   authApiLogs:
     driver: local

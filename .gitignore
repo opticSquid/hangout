@@ -3,3 +3,5 @@
 docker-stack.yaml
 *-stack.*
 
+.env
+.env.*
