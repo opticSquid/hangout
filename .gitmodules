@@ -22,3 +22,9 @@
 [submodule "hangout-infra"]
 	path = hangout-infra
 	url = https://github.com/opticSquid/hangout-infra.git
+[submodule "hangout-web"]
+	path = hangout-web
+	url = ./hangout-web/
+[submodule "core-services/hangout-content-delivery-api"]
+	path = core-services/hangout-content-delivery-api
+	url = ./core-services/hangout-content-delivery-api/
