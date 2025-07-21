@@ -3,9 +3,32 @@ receivers:
     protocols:
       http:
         endpoint: 0.0.0.0:4318
+      grpc:
+        endpoint: 0.0.0.0:4317
+  hostmetrics:
+    collection_interval: 10s
+    scrapers:
+      # CPU utilization metrics
+      cpu:
+      # Disk I/O metrics
+      disk:
+      # File System utilization metrics
+      filesystem:
+      # CPU load metrics
+      load:
+        cpu_average: true
+      # Memory utilization metrics
+      memory:
+      # Network interface I/O metrics & TCP connection metrics
+      network:
+      # Paging/Swap space utilization and I/O metrics
+      paging:
 
 processors:
   batch:
+  resourcedetection:
+    detectors: [env, system]
+  cumulativetodelta:
 
 exporters:
   debug:
@@ -30,8 +53,8 @@ extensions:
 service:
   pipelines:
     metrics:
-      receivers: [otlp]
-      processors: [batch]
+      receivers: [otlp, hostmetrics]
+      processors: [cumulativetodelta, batch, resourcedetection]
       # exporters: [prometheus, debug]
       exporters: [prometheus]
     traces:
