@@ -307,9 +307,9 @@ services:
 # * layer 4 components - depends on layer 0,1,2,3 components
   # user content upload and fetch and content interactions
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.5.3
+    image: ghcr.io/opticsquid/hangout-post-api:v1.5.9
     deploy:
-      replicas: 2
+      replicas: 1
       resources:
         limits:
           cpus: 0.4
@@ -352,9 +352,9 @@ services:
 
   # user content processing
   storage-service:
-    image: ghcr.io/opticsquid/hangout-storage-service:v2.1.3
+    image: ghcr.io/opticsquid/hangout-storage-service:v2.1.5
     deploy:
-      replicas: 2
+      replicas: 1
       resources:
         limits:
           cpus: 0.4
@@ -381,14 +381,15 @@ services:
       - geo-postgres
       - minio
       - otel-collector
+      - cadvisor
       - kafka
       - post-api
 
   # user profile and activity
   profile-api:
-    image: ghcr.io/opticsquid/hangout-profile-api:v1.0.0
+    image: ghcr.io/opticsquid/hangout-profile-api:v1.1.0
     deploy:
-      replicas: 0
+      replicas: 1
       resources:
         limits:
           cpus: 0.4
@@ -398,17 +399,14 @@ services:
       - DB_NAME=profiles
       - DB_USERNAME=postgres
       - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - KAFKA_SERVER=kafka:19091
-      - OTEL_COLLECTOR=http://otel-collector:4318
+      - OTEL_COLLECTOR=http://otel-collector:4317
       - MINIO_SERVER=http://minio:9000
-      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
+      - MINIO_ACCESS_KEY=tvX2CSzBYVYWjeewgefr
       - MINIO_SECRET_KEY=${PROFILE_API_MINIO_KEY}
-      - UPLOAD_BUCKET=upload
-      - CLIENT_ORIGINS=http://localhost:8080/
-      - CONTENT_TOPIC=content
+      - UPLOAD_BUCKET=profile-photos
+      - CLIENT_ORIGINS=http://localhost:5173/
+      - FORMAT_SQL=true
       - AUTH_SERVICE=http://auth-api:5011
-    ports:
-      - 5014:5014
     depends_on:
       - geo-postgres
       - minio
@@ -419,7 +417,7 @@ services:
 # * layer 5 components - depends on layer 0,1,2,3,4 components
   # reverse-proxy for own services
   gateway:
-    image: nginx:1.28.0
+    image: nginx:1.29.0-alpine
     deploy:
       replicas: 1
       resources:
@@ -434,7 +432,22 @@ services:
       - auth-api
       - post-api
       - minio
-      # - profile-api
+      - profile-api
+
+# * layer 6 components - depends on layer 0,1,2,3,4,5, components
+  # frontend
+  web:
+    image: ghcr.io/opticsquid/hangout-web-new:v1.0.1
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 50M
+    ports:
+      - 5173:80
+    depends_on:
+      - gateway
 
 volumes:
   geopostgresData:
