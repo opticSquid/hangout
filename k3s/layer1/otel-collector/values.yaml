@@ -1,0 +1,82 @@
+mode: deployment
+
+service:
+  type: ClusterIP
+
+ports:
+  otlp:
+    enabled: true
+    containerPort: 4317
+    servicePort: 4317
+    hostPort: 4317
+    protocol: TCP
+    # nodePort: 30317
+    appProtocol: grpc
+  otlp-http:
+    enabled: true
+    containerPort: 4318
+    servicePort: 4318
+    hostPort: 4318
+    protocol: TCP
+  metrics:
+    # The metrics port is disabled by default. However you need to enable the port
+    # in order to use the ServiceMonitor (serviceMonitor.enabled) or PodMonitor (podMonitor.enabled).
+    enabled: false
+    containerPort: 8888
+    servicePort: 8888
+    protocol: TCP
+
+image:
+  repository: otel/opentelemetry-collector-contrib
+  tag: 0.131.0
+
+resources:
+  limits:
+    cpu: 270m
+    memory: 300Mi
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: ${env:MY_POD_IP}:4317
+        http:
+          endpoint: ${env:MY_POD_IP}:4318
+  processors:
+    batch: {}
+  exporters:
+    debug:
+      verbosity: detailed
+    otlp:
+      endpoint: tempo.layer0:4317
+      tls:
+        insecure: true
+    otlphttp/loki:
+      endpoint: "http://loki.layer0:3100/otlp"
+    prometheus:
+      endpoint: 0.0.0.0:8889
+      const_labels:
+        origin: otel-collector
+  service:
+    pipelines:
+      metrics:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [prometheus]
+      traces:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [otlp]
+      logs:
+        receivers: [otlp]
+        exporters: [otlphttp/loki]
+    telemetry:
+      metrics:
+        level: detailed
+        readers:
+          - pull:
+              exporter:
+                prometheus:
+                  host: "0.0.0.0"
+                  port: 8888

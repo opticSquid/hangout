@@ -32,22 +32,19 @@ tempo:
   #   - myRegistryKeySecretName
 
   updateStrategy: RollingUpdate
-  resources: {}
-  #  requests:
-  #    cpu: 1000m
-  #    memory: 4Gi
-  #  limits:
-  #    cpu: 2000m
-  #    memory: 6Gi
+  resources:
+    limits:
+      cpu: 100m
+      memory: 300Mi
 
   memBallastSizeMbs: 1024
   multitenancyEnabled: false
   # -- If true, Tempo will report anonymous usage data about the shape of a deployment to Grafana Labs
-  reportingEnabled: true
+  reportingEnabled: false
   metricsGenerator:
     # -- If true, enables Tempo's metrics generator (https://grafana.com/docs/tempo/next/metrics-generator/)
     enabled: false
-    remoteWriteUrl: "http://prometheus.monitoring:9090/api/v1/write"
+    remoteWriteUrl: "http://prometheus-prometheus-pushgateway.layer0:9091/api/v1/write"
   # -- Configuration options for the ingester.
   # Refers to: https://grafana.com/docs/tempo/latest/configuration/#ingester
   ingester: {}
@@ -77,7 +74,8 @@ tempo:
     # -- Path to the per tenant override config file. The values of the `per_tenant_overrides` config below will be written to the default path `/conf/overrides.yaml`. Users can set tenant-specific overrides settings in a separate file and point per_tenant_override_config to it if not using the per_tenant_overrides block below.
     per_tenant_override_config: /conf/overrides.yaml
   # -- The `per tenant` aka `tenant-specific` runtime overrides. This allows overriding values set in the configuration on a per-tenant basis. Note that *all* values must be given for each per-tenant configuration block. Refer to [Runtime overrides](https://grafana.com/docs/tempo/latest/configuration/#runtime-overrides) and [Tenant-Specific overrides](https://grafana.com/docs/tempo/latest/configuration/#tenant-specific-overrides) documentation for more details.
-  per_tenant_overrides: {}
+  per_tenant_overrides:
+    {}
     # 'tenant-id':
     #  metrics_generator:
     #    processors:
@@ -136,7 +134,8 @@ tempo:
           endpoint: "0.0.0.0:4317"
         http:
           endpoint: "0.0.0.0:4318"
-  securityContext: {}
+  securityContext:
+    {}
     # allowPrivilegeEscalation: false
     #  capabilities:
     #    drop:
@@ -158,38 +157,38 @@ tempo:
 # -- Tempo configuration file contents
 # @default -- Dynamically generated tempo configmap
 config: |
-    memberlist:
-      cluster_label: "{{ .Release.Name }}.{{ .Release.Namespace }}"
-    multitenancy_enabled: {{ .Values.tempo.multitenancyEnabled }}
-    usage_report:
-      reporting_enabled: {{ .Values.tempo.reportingEnabled }}
-    compactor:
-      compaction:
-        block_retention: {{ .Values.tempo.retention }}
-    distributor:
-      receivers:
-        {{- toYaml .Values.tempo.receivers | nindent 8 }}
-    ingester:
-      {{- toYaml .Values.tempo.ingester | nindent 6 }}
-    server:
-      {{- toYaml .Values.tempo.server | nindent 6 }}
-    storage:
-      {{- toYaml .Values.tempo.storage | nindent 6 }}
-    querier:
-      {{- toYaml .Values.tempo.querier | nindent 6 }}
-    query_frontend:
-      {{- toYaml .Values.tempo.queryFrontend | nindent 6 }}
-    overrides:
-      {{- toYaml .Values.tempo.overrides | nindent 6 }}
-      {{- if .Values.tempo.metricsGenerator.enabled }}
-    metrics_generator:
-          storage:
-            path: "/tmp/tempo"
-            remote_write:
-              - url: {{ .Values.tempo.metricsGenerator.remoteWriteUrl }}
-          traces_storage:
-            path: "/tmp/traces"
-      {{- end }}
+  memberlist:
+    cluster_label: "{{ .Release.Name }}.{{ .Release.Namespace }}"
+  multitenancy_enabled: {{ .Values.tempo.multitenancyEnabled }}
+  usage_report:
+    reporting_enabled: {{ .Values.tempo.reportingEnabled }}
+  compactor:
+    compaction:
+      block_retention: {{ .Values.tempo.retention }}
+  distributor:
+    receivers:
+      {{- toYaml .Values.tempo.receivers | nindent 8 }}
+  ingester:
+    {{- toYaml .Values.tempo.ingester | nindent 6 }}
+  server:
+    {{- toYaml .Values.tempo.server | nindent 6 }}
+  storage:
+    {{- toYaml .Values.tempo.storage | nindent 6 }}
+  querier:
+    {{- toYaml .Values.tempo.querier | nindent 6 }}
+  query_frontend:
+    {{- toYaml .Values.tempo.queryFrontend | nindent 6 }}
+  overrides:
+    {{- toYaml .Values.tempo.overrides | nindent 6 }}
+    {{- if .Values.tempo.metricsGenerator.enabled }}
+  metrics_generator:
+        storage:
+          path: "/tmp/tempo"
+          remote_write:
+            - url: {{ .Values.tempo.metricsGenerator.remoteWriteUrl }}
+        traces_storage:
+          path: "/tmp/traces"
+    {{- end }}
 
 tempoQuery:
   repository: grafana/tempo-query
@@ -240,7 +239,6 @@ tempoQuery:
     #       port:
     #         name: use-annotation
 
-
     tls: []
     #  - secretName: tempo-query-tls
     #    hosts:
@@ -264,7 +262,8 @@ tempoQuery:
   #   mountPath: /mnt/volume
   #   readOnly: true
   #   existingClaim: volume-claim
-  securityContext: {}
+  securityContext:
+    {}
     # allowPrivilegeEscalation: false
     #  capabilities:
     #    drop:
@@ -312,7 +311,8 @@ serviceMonitor:
   # scrapeTimeout: 10s
 
 persistence:
-  enabled: false
+  enabled:
+    false
     # -- Enable StatefulSetAutoDeletePVC feature
   enableStatefulSetAutoDeletePVC: false
   # storageClassName: local-path
