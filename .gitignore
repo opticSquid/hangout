@@ -5,3 +5,4 @@ docker-stack.yaml
 
 .env
 .env.*
+*aws*
