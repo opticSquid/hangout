@@ -28,3 +28,6 @@
 [submodule "core-services/hangout-content-delivery-api"]
 	path = core-services/hangout-content-delivery-api
 	url = ./core-services/hangout-content-delivery-api/
+[submodule "k3s"]
+	path = k3s
+	url = /home/soumalya/Development/Hangout/k3s/
