@@ -27,7 +27,7 @@
 	url = ./hangout-web/
 [submodule "core-services/hangout-content-delivery-api"]
 	path = core-services/hangout-content-delivery-api
-	url = ./core-services/hangout-content-delivery-api/
+	url = https://github.com/opticSquid/hangout-content-delivery-api.git
 [submodule "k3s"]
 	path = k3s
-	url = ./k3s/
+	url = https://github.com/opticSquid/k3s.git
