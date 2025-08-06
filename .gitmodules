@@ -30,4 +30,4 @@
 	url = ./core-services/hangout-content-delivery-api/
 [submodule "k3s"]
 	path = k3s
-	url = /home/soumalya/Development/Hangout/k3s/
+	url = ./k3s/
