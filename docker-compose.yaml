@@ -290,7 +290,7 @@ services:
       - SMTP_ISSECURE=true
       - SMTP_USERNAME=soumalyabhattacharya6@gmail.com
       - SMTP_PASSWORD=${NOTIFICATION_SERVICE_SMTP_PASSWORD}
-      - MAIL_CONFIRMATION_URL=http://localhost:80/auth-api/v1/public/verify?token=
+      - MAIL_CONFIRMATION_URL=http://localhost:80/auth-api/v1/auth/verify?token=
       - JWT_PRIVATE_KEY=${NOTIFICATION_SERVICE_JWT_SECRET}
       - port=5012
       - KAFKA_SERVER=kafka:19091
