@@ -1,0 +1,7 @@
+openTelemetry:
+  endpoint: http://otel-collector:4318
+  protocol: http/protobuf
+  interval: 60
+  serviceName: kafka
+rules:
+  - pattern: ".*"

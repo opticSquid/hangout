@@ -8,15 +8,17 @@ scrape_configs:
       - targets:
           - prometheus:9090
 
-  - job_name: "otel-collector"
+  - job_name: "open telemetry exported metrics"
     static_configs:
       - targets:
           - otel-collector:8889
 
-  - job_name: "minio-job"
-    bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoiNkNZZHpzRW5XU2l4VWR5a2lBYVQiLCJleHAiOjQ4OTQ4MzU1NDV9.KFlS4HDSTKerh9YarXuvBdfwBLbK-kK0zln6sG10w1bcwpfGzSfyDPN0RENzuSbD3gsI5rqCi8bReNLxNRWXOQ
-    metrics_path: /minio/v2/metrics/cluster
-    scheme: http
+  - job_name: "open telemetry collector metrics"
     static_configs:
       - targets:
-          - host.docker.internal:9000
+          - otel-collector:8888
+
+  - job_name: "container metrics"
+    static_configs:
+      - targets:
+          - cadvisor:8080

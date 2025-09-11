@@ -1,0 +1,5 @@
+start postgres
+create databases
+
+start minio
+create buckets

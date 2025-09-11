@@ -13,15 +13,15 @@
 [submodule "core-services/hangout-storage-service"]
 	path = core-services/hangout-storage-service
 	url = https://github.com/opticSquid/hangout-storage-service.git
-[submodule "app"]
-	path = app
-	url = https://github.com/opticSquid/hangout-android-app.git
-[submodule "hangout-web"]
-	path = hangout-web
-	url = https://github.com/opticSquid/hangout-web.git
 [submodule "core-services/hangout-profile-api"]
 	path = core-services/hangout-profile-api
 	url = https://github.com/opticSquid/hangout-profile-api.git
-[submodule "hangout-infra"]
-	path = hangout-infra
-	url = https://github.com/opticSquid/hangout-infra.git
+[submodule "hangout-web"]
+	path = hangout-web
+	url = ./hangout-web/
+[submodule "core-services/hangout-content-delivery-api"]
+	path = core-services/hangout-content-delivery-api
+	url = https://github.com/opticSquid/hangout-content-delivery-api.git
+[submodule "k3s"]
+	path = k3s
+	url = https://github.com/opticSquid/k3s.git

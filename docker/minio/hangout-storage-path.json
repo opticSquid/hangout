@@ -13,7 +13,7 @@
                 "s3:GetObject"
             ],
             "Resource": [
-                "arn:aws:s3:::hangout-storage-path/*"
+                "arn:aws:s3:::processed/*"
             ]
         }
     ]
