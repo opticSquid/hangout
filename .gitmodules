@@ -18,7 +18,7 @@
 	url = https://github.com/opticSquid/hangout-profile-api.git
 [submodule "hangout-web"]
 	path = hangout-web
-	url = ./hangout-web/
+	url = https://github.com/opticSquid/hangout-web-new
 [submodule "core-services/hangout-content-delivery-api"]
 	path = core-services/hangout-content-delivery-api
 	url = https://github.com/opticSquid/hangout-content-delivery-api.git
