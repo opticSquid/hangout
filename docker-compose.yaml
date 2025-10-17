@@ -2,7 +2,7 @@ services:
   # * layer 0 components - no dependencies
   # main database
   geo-postgres:
-    image: postgis/postgis:17-master
+    image: postgis/postgis:18-3.6
     deploy:
       replicas: 1
       resources:
@@ -14,7 +14,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - geopostgresData:/var/lib/postgresql/data
+      - geopostgresVolume:/var/lib/postgresql
 
   # analytics database
   clickhouse:
@@ -225,7 +225,7 @@ services:
 
   # Temporary access to content
   content-delivery-api:
-    image: ghcr.io/opticsquid/hangout-content-delivery-api:v1.2.0
+    image: ghcr.io/opticsquid/hangout-content-delivery-api:v1.2.4
     deploy:
       replicas: 1
       resources:
@@ -245,6 +245,7 @@ services:
       - HCDA_AWS_VIDEO_CLOUDFRONT_EXPIRATION-DURATION-SECONDS=300
       - HCDA_COOKIE_DOMAIN=hangoutsb.in
       - HCDA_OTEL_ENDPOINT=otel-collector:4317
+      - HCDA_CORS_ALLOWED-ORIGINS=http://localhost:5173
     volumes:
       - ./core-services/hangout-content-delivery-api/certificates/private_key.pem:/mnt/certs/private_key.pem:ro
     depends_on:
@@ -479,6 +480,8 @@ services:
 
 volumes:
   geopostgresData:
+    driver: local
+  geopostgresVolume:
     driver: local
   clickHouseData:
     driver: local
