@@ -2,7 +2,7 @@ services:
   # * layer 0 components - no dependencies
   # main database
   geo-postgres:
-    image: postgis/postgis:17-master
+    image: postgis/postgis:18-3.6
     deploy:
       replicas: 1
       resources:
@@ -14,7 +14,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - geopostgresData:/var/lib/postgresql/data
+      - geopostgresVolume:/var/lib/postgresql
 
   # analytics database
   clickhouse:
@@ -29,7 +29,7 @@ services:
       - 18123:8123
       - 19000:9000
     environment:
-     - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
     ulimits:
       nofile:
         soft: 262144
@@ -115,7 +115,7 @@ services:
       - ./docker/tempo/tempo-local.yaml:/etc/tempo.yaml:rw
       - tempoData:/tmp
 
-# * layer 1 components - dependent on layer 0 compoenents
+  # * layer 1 components - dependent on layer 0 compoenents
   # container monitoring
   cadvisor:
     image: ghcr.io/google/cadvisor:v0.53.0
@@ -141,7 +141,7 @@ services:
           cpus: 0.2
           memory: 350M
     volumes:
-    - grafanaData:/var/lib/grafana
+      - grafanaData:/var/lib/grafana
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -177,7 +177,7 @@ services:
       - loki
       - tempo
 
-# * layer 2 components - dependent on layer 0,1 components
+  # * layer 2 components - dependent on layer 0,1 components
   # event bus
   kafka:
     image: bitnami/kafka:4.0.0
@@ -212,8 +212,8 @@ services:
       - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
       - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
       - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1 # For auto-created topics
-      - KAFKA_CFG_NUM_PARTITIONS=20         # For auto-created topics
-       # Enable Prometheus JMX Exporter via Bitnami specific env vars
+      - KAFKA_CFG_NUM_PARTITIONS=20 # For auto-created topics
+        # Enable Prometheus JMX Exporter via Bitnami specific env vars
       - KAFKA_ENABLE_PROMETHEUS_METRICS=true
       - KAFKA_PROMETHEUS_METRICS_PORT_NUMBER=9095 # Port Kafka will expose metrics on for Prometheus
       - KAFKA_JMX_PORT=9095
@@ -225,7 +225,7 @@ services:
 
   # Temporary access to content
   content-delivery-api:
-    image: ghcr.io/opticsquid/hangout-content-delivery-api:v1.2.0
+    image: ghcr.io/opticsquid/hangout-content-delivery-api:v1.2.4
     deploy:
       replicas: 1
       resources:
@@ -245,12 +245,13 @@ services:
       - HCDA_AWS_VIDEO_CLOUDFRONT_EXPIRATION-DURATION-SECONDS=300
       - HCDA_COOKIE_DOMAIN=hangoutsb.in
       - HCDA_OTEL_ENDPOINT=otel-collector:4317
+      - HCDA_CORS_ALLOWED-ORIGINS=http://localhost:5173
     volumes:
       - ./core-services/hangout-content-delivery-api/certificates/private_key.pem:/mnt/certs/private_key.pem:ro
     depends_on:
-    - otel-collector
+      - otel-collector
 
-# * layer 3 components - depends on layer 0,1,2 components
+  # * layer 3 components - depends on layer 0,1,2 components
   # kafka UI
   kafdrop:
     image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
@@ -270,7 +271,7 @@ services:
 
   # authentication & authorization
   auth-api:
-    image: ghcr.io/opticsquid/hangout-auth-api:v2.4.0
+    image: ghcr.io/opticsquid/hangout-auth-api:v2.4.1
     deploy:
       replicas: 1
       resources:
@@ -332,7 +333,7 @@ services:
       - otel-collector
       - kafka
 
-# * layer 4 components - depends on layer 0,1,2,3 components
+  # * layer 4 components - depends on layer 0,1,2,3 components
   # user content upload and fetch and content interactions
   post-api:
     image: ghcr.io/opticsquid/hangout-post-api:v1.5.9
@@ -442,7 +443,7 @@ services:
       - kafka
       - auth-api
 
-# * layer 5 components - depends on layer 0,1,2,3,4 components
+  # * layer 5 components - depends on layer 0,1,2,3,4 components
   # reverse-proxy for own services
   gateway:
     image: nginx:1.29.0-alpine
@@ -462,7 +463,7 @@ services:
       - minio
       - profile-api
 
-# * layer 6 components - depends on layer 0,1,2,3,4,5, components
+  # * layer 6 components - depends on layer 0,1,2,3,4,5, components
   # frontend
   web:
     image: ghcr.io/opticsquid/hangout-web-new:v1.0.1
@@ -479,6 +480,8 @@ services:
 
 volumes:
   geopostgresData:
+    driver: local
+  geopostgresVolume:
     driver: local
   clickHouseData:
     driver: local
