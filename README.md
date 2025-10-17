@@ -1,16 +1,18 @@
 # Hangout
 
-<img src="./assets/logo_transparent.png" style="min-height:250px;max-height:500px;min-width:250px;max-width:500px;object-fit:contain" alt="Logo Image">
+<img src="./assets/logo.png" style="min-height:256px;max-height:512px;min-width:256px;max-width:512px;object-fit:contain" alt="Logo Image">
 
 ## Introduction
 
-This is a social media app that lets you find the best locations for hanging out with your friends and family helping you spend a quality time and experience  while taking into account your taste, your location and your budget range. Imagine a cross between Zomato District and Instagram Reels
+This is a hyper local  short video content social media app that lets you do all things scocial media besides has special focus on find the best locations for hanging out with your friends and family helping you spend a quality time and experience  while taking into account your taste, your location and your budget range. Imagine a cross between Zomato District and Instagram Reels.
 
 ### Whats so unique for the normal users
 
-- You can post your views and concerns about a place you have been to planning to go using text, photos or short video reels.
+- You can do all things you do in normal social media
+- Content is sharply focused on short videos.
+- You see the content from the creators geographically arround you first. So, it is local first platform
+- You can book services of events or businesses nearby (ex: Concerts, Standups, any community event, restaurants, hotels, etc.)
 - Business owners themselves or other users can react on your posts or they can comment on your posts.
-- Businesses themselves also can post their offerings (like Diwali Sale or Happy Hours etc) and you can avail their services in 1 click
 
 ### Whats in it for businesses
 
@@ -34,6 +36,7 @@ This all will help your design and tailor your offerings better to boost your bu
 
 - User Signup
 - User Login
+- User Onboarding in case of new user
 - Trusted / Untrusted Session
 - Infinite Scroll
 - ABR Streaming of Content
@@ -44,3 +47,10 @@ This all will help your design and tailor your offerings better to boost your bu
 - Reply
 - User Profile Section
 - Converison of User Uploaded video to ABR stream comaptible video chunks and video manifest creation in multiple resolutions
+
+### Future Plans
+- Add AI that can understand vidoe content and user demographics to personalize the content with localization.
+- Add Capabilities to book services of businesses.
+- Reencode videos to more efficient formats in case they get higher views
+- Delete raw user uploaded content from bucket after certain number of days
+- Integrate OAuth Logins
