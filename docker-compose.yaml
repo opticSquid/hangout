@@ -42,7 +42,7 @@ services:
   minio:
     image: minio/minio:RELEASE.2025-05-24T17-08-30Z
     deploy:
-      replicas: 1
+      replicas: 0
       resources:
         limits:
           cpus: 0.2
@@ -82,7 +82,7 @@ services:
 
   # logs
   loki:
-    image: grafana/loki:main-44b2c27
+    image: grafana/loki:3
     deploy:
       replicas: 1
       resources:
@@ -103,7 +103,7 @@ services:
 
   # traces
   tempo:
-    image: grafana/tempo:main-b9a611e
+    image: grafana/tempo:main-5bd8e01
     deploy:
       replicas: 1
       resources:
@@ -133,7 +133,7 @@ services:
 
   # dashboard
   grafana:
-    image: grafana/grafana:12.0.1
+    image: grafana/grafana:12.2.0
     deploy:
       replicas: 1
       resources:
@@ -156,7 +156,7 @@ services:
 
   # observability data collector
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.127.0
+    image: otel/opentelemetry-collector-contrib:0.137.0
     deploy:
       replicas: 1
       resources:
@@ -168,7 +168,7 @@ services:
     volumes:
       - ./docker/collector/otel-collector-compose.yaml:/etc/otelcol-contrib/config.yaml
     ports:
-      - "4318:4318" # OTLP HTTP receiver
+      # - "4318:4318" # OTLP HTTP receiver
       - "4317:4317" # OTLP GRPCreciever
       - "8888:8888" # Prometheus metrics exposed by the Collector
       - "8889:8889" # Prometheus exporter metrics
@@ -227,7 +227,7 @@ services:
   content-delivery-api:
     image: ghcr.io/opticsquid/hangout-content-delivery-api:v1.2.4
     deploy:
-      replicas: 1
+      replicas: 0
       resources:
         limits:
           cpus: 0.2
@@ -250,13 +250,14 @@ services:
       - ./core-services/hangout-content-delivery-api/certificates/private_key.pem:/mnt/certs/private_key.pem:ro
     depends_on:
       - otel-collector
+      - cadvisor
 
   # * layer 3 components - depends on layer 0,1,2 components
   # kafka UI
   kafdrop:
     image: obsidiandynamics/kafdrop:4.1.1-SNAPSHOT
     deploy:
-      replicas: 0
+      replicas: 1
       resources:
         limits:
           cpus: 0.15
@@ -336,13 +337,13 @@ services:
   # * layer 4 components - depends on layer 0,1,2,3 components
   # user content upload and fetch and content interactions
   post-api:
-    image: ghcr.io/opticsquid/hangout-post-api:v1.5.9
+    image: ghcr.io/opticsquid/hangout-post-api:v1.6.1
     deploy:
-      replicas: 1
+      replicas: 2
       resources:
         limits:
-          cpus: 0.4
-          memory: 325M
+          cpus: 0.6
+          memory: 450M
     environment:
       - DB_URL=geo-postgres:5432
       - DB_NAME=posts
@@ -352,10 +353,8 @@ services:
       - OTEL_COLLECTOR=http://otel-collector:4317
       - AUTH_SERVICE=http://auth-api:5011/auth-api/v1
       - LOG_DIR=/logs
-      - MINIO_SERVER=http://minio:9000
-      - MINIO_ACCESS_KEY=sy22NKhjmHHCxGkSxn4h
-      - MINIO_SECRET_KEY=${POST_API_MINIO_KEY}
-      - UPLOAD_BUCKET=upload
+      - AWS_REGION=ap-south-1
+      - UPLOAD_BUCKET=hangout-uploaded
       - CLIENT_ORIGINS=http://localhost:5173/
       - PAGE_LENGTH=25
       - FORMAT_SQL=true
@@ -381,9 +380,9 @@ services:
 
   # user content processing
   storage-service:
-    image: ghcr.io/opticsquid/hangout-storage-service:v2.1.5
+    image: ghcr.io/opticsquid/hangout-storage-service:v2.2.3-beta1
     deploy:
-      replicas: 1
+      replicas: 2
       resources:
         limits:
           cpus: 0.4
@@ -394,11 +393,9 @@ services:
       - HSS_KAFKA_TOPIC=content
       - HSS_KAFKA_GROUP-ID=hangout-storage-service
       - HSS_LOG_LEVEL=debug
-      - HSS_MINIO_BASE-URL=minio:9000
-      - HSS_MINIO_ACCESS-KEY=ITtpzgn9Q0UjIbi0D71V
-      - HSS_MINIO_SECRET-KEY=${STORAGE_SERVICE_MINIO_KEY}
-      - HSS_MINIO_UPLOAD-BUCKET=upload
-      - HSS_MINIO_STORAGE-BUCKET=processed
+      - HSS_AWS_REGION=ap-south-1
+      - HSS_AWS_S3_UPLOAD-BUCKET=hangout-uploaded
+      - HSS_AWS_S3_STORAGE-BUCKET=hangout-processed
       - HSS_PROCESS_QUEUE-LENGTH=4
       - HSS_PROCESS_POOL-STRENGTH=4
       - HSS_DATASOURCE_USERNAME=postgres
@@ -413,12 +410,14 @@ services:
       - cadvisor
       - kafka
       - post-api
+    volumes:
+      - /home/soumalya/.aws:/home/ubuntu/.aws:ro
 
   # user profile and activity
   profile-api:
-    image: ghcr.io/opticsquid/hangout-profile-api:v1.1.0
+    image: ghcr.io/opticsquid/hangout-profile-api:v1.2.0
     deploy:
-      replicas: 1
+      replicas: 0
       resources:
         limits:
           cpus: 0.4
@@ -429,9 +428,7 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - OTEL_COLLECTOR=http://otel-collector:4317
-      - MINIO_SERVER=http://minio:9000
-      - MINIO_ACCESS_KEY=tvX2CSzBYVYWjeewgefr
-      - MINIO_SECRET_KEY=${PROFILE_API_MINIO_KEY}
+      - AWS_REGION=ap-south-1
       - UPLOAD_BUCKET=profile-photos
       - CLIENT_ORIGINS=http://localhost:5173/
       - FORMAT_SQL=true
@@ -460,15 +457,16 @@ services:
     depends_on:
       - auth-api
       - post-api
-      - minio
       - profile-api
+      - content-delivery-api
+      - minio
 
   # * layer 6 components - depends on layer 0,1,2,3,4,5, components
   # frontend
   web:
-    image: ghcr.io/opticsquid/hangout-web-new:v1.0.1
+    image: ghcr.io/opticsquid/hangout-web-new:v1.1.0
     deploy:
-      replicas: 1
+      replicas: 0
       resources:
         limits:
           cpus: 0.1

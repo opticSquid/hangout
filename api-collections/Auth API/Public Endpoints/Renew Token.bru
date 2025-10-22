@@ -4,8 +4,8 @@ meta {
   seq: 3
 }
 
-post {
-  url: {{auth_url_prod}}/public/renew
+get {
+  url: {{auth_url_gateway}}/auth/renew
   body: json
   auth: none
 }
