@@ -476,6 +476,23 @@ services:
     depends_on:
       - gateway
 
+  # Stop gap solution to replay file upload events in kafka after they are removed from topic by retention period
+  upload-event-replayer:
+    image: ghcr.io/opticsquid/upload_event_replayer:v1.0.0
+    deploy:
+      replicas: 0
+    environment:
+      - DB_HOST=geo-postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=posts
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:19091
+      - KAFKA_TOPIC=content
+    depends_on:
+      - geo-postgres
+      - kafka
+
 volumes:
   geopostgresData:
     driver: local
