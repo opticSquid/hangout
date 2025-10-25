@@ -297,6 +297,8 @@ services:
       - INTERNAL_SERVICES_ORIGIN=http://notification-service:5012,http://post-api:5013
       - CLIENT_ORIGIN=http://localhost:5173/
       - COOKIE_DOMAIN=localhost
+    ports:
+      - 5011:5011
     volumes:
       - authApiLogs:/logs
     depends_on:
@@ -373,14 +375,13 @@ services:
       - postApiLogs:/logs
     depends_on:
       - geo-postgres
-      - minio
       - otel-collector
       - kafka
       - auth-api
 
   # user content processing
   storage-service:
-    image: ghcr.io/opticsquid/hangout-storage-service:v2.2.3-beta1
+    image: ghcr.io/opticsquid/hangout-storage-service:v2.2.4
     deploy:
       replicas: 2
       resources:
@@ -403,15 +404,14 @@ services:
       - HSS_DATASOURCE_URL=geo-postgres:5432
       - HSS_DATASOURCE_DBNAME=posts
       - HSS_OTEL_ENDPOINT=otel-collector:4317
+    volumes:
+      - storageServiceData:/tmp
     depends_on:
       - geo-postgres
-      - minio
       - otel-collector
       - cadvisor
       - kafka
       - post-api
-    volumes:
-      - /home/soumalya/.aws:/home/ubuntu/.aws:ro
 
   # user profile and activity
   profile-api:
@@ -435,7 +435,6 @@ services:
       - AUTH_SERVICE=http://auth-api:5011
     depends_on:
       - geo-postgres
-      - minio
       - otel-collector
       - kafka
       - auth-api
@@ -517,4 +516,6 @@ volumes:
   authApiLogs:
     driver: local
   postApiLogs:
+    driver: local
+  storageServiceData:
     driver: local
