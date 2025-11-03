@@ -1,0 +1,17 @@
+{
+	"nodes":[
+		{"id":"904b0a4861cc3125","type":"text","text":"**Solution**\nOutline a possible solution for each problem","x":-480,"y":-440,"width":250,"height":380,"color":"4"},
+		{"id":"93d4d869a443d881","type":"text","text":"**Problem**\nList of top pain points","x":-760,"y":-440,"width":250,"height":380,"color":"1"},
+		{"id":"4a3338ae804ab352","type":"text","text":"**Unique Value Propositions**\nSingle, clear, compelling message that turns an unaware visitor into an interested prospect","x":-200,"y":-440,"width":250,"height":380,"color":"5"},
+		{"id":"72cbc071b76989b2","type":"text","text":"**Unfair Advantage**\nSomething that can't be easily copied or bought","x":80,"y":-440,"width":250,"height":380,"color":"2"},
+		{"id":"a325b1a8f97ea07d","type":"text","text":"**Customer Segments**\nList your target customers and users\n\n[[End User]]\n","x":360,"y":-440,"width":250,"height":380,"color":"3"},
+		{"id":"e0450fdcf0ebdf45","type":"text","text":"**Existing Alternatives**\nList how these problems are solved today","x":-760,"y":-40,"width":250,"height":380,"color":"2"},
+		{"id":"393fc484e8465d81","type":"text","text":"**Cost Structure**\nList your fixed and variable costs","x":-760,"y":360,"width":660,"height":380,"color":"6"},
+		{"id":"6f2fdef44934f31a","type":"text","text":"**Revenue Streams**\nList your sources of revenue","x":-75,"y":360,"width":685,"height":380,"color":"5"},
+		{"id":"3f055ede6605bb00","type":"text","text":"**Key Metrics**\nList the key numbers that tell you how your business is doing","x":-480,"y":-40,"width":250,"height":380,"color":"3"},
+		{"id":"6129429e4b51a38d","type":"text","text":"**High Level Concept**\nList your X for Y analogy(e.g. YouTube, Flickr for videos)","x":-200,"y":-40,"width":250,"height":380,"color":"6"},
+		{"id":"7786443aec4fd281","type":"text","text":"**Channels**\nList your path to customers","x":80,"y":-40,"width":250,"height":380,"color":"1"},
+		{"id":"b023ef96f3bd1044","type":"text","text":"**Early Adopters**\nList the characteristics of your early \n\n1. Young Professionals who has active social life that means has a group of friends with whom they are in contact regularly and goes places with them.\n2. Couples who want to go to different places to spend quality time\n3. Teenage people who explores city with friends\n4. Tourists coming to a new city and looking to explore","x":360,"y":-40,"width":250,"height":380,"color":"4"}
+	],
+	"edges":[]
+}

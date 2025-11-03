@@ -1,0 +1,228 @@
+{
+  "main": {
+    "id": "cda1f0ba24d65b02",
+    "type": "split",
+    "children": [
+      {
+        "id": "0cdd9c3e78bf9bd6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f8f05d7024211188",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Problem Statement.md",
+                "mode": "source",
+                "source": false
+              },
+              "pinned": true,
+              "icon": "lucide-file",
+              "title": "Problem Statement"
+            }
+          },
+          {
+            "id": "30fef8cf21294806",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Five why to Problem Statement.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Five why to Problem Statement"
+            }
+          }
+        ]
+      },
+      {
+        "id": "090e7ed2d9902b1c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c48540aeb1d4dd7f",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "graph",
+              "state": {},
+              "pinned": true,
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "ccf291ebf42ee47b",
+    "type": "split",
+    "children": [
+      {
+        "id": "eab477e4636fec6b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "97bba0d62bae9916",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "3a7c491913cb9f5a",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#buyer",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "e3f73e3dae2b1afc",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "3a17ad3b21b9584b",
+    "type": "split",
+    "children": [
+      {
+        "id": "9abf1769530aa70c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0ce81abc2cdae3a1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "4549ba1035732c23",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "5409d24a14d431de",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "b15363b7e645ea13",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:Create new base": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "f8f05d7024211188",
+  "lastOpenFiles": [
+    "Five why to Problem Statement.md",
+    "Problem Statement.md",
+    "Index.md",
+    "Canvases/end-user.canvas",
+    "Canvases",
+    "Creator Market Place.md",
+    "Proposed Solution.md",
+    "Business Intelligence Tools.md",
+    "Personalization.md",
+    "Simplifying Checkout.md",
+    "Purchase History.md",
+    "Platform Partner.md",
+    "Finding Places.md",
+    "End User Experience.md",
+    "User Types.md",
+    "End User.md",
+    "Empathizing with User.md",
+    "Creator.md",
+    "Content Creation.md",
+    "Appendix.md",
+    "End Users.md",
+    "Welcome.md"
+  ]
+}

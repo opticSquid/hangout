@@ -19,6 +19,6 @@
 [submodule "core-services/hangout-content-delivery-api"]
 	path = core-services/hangout-content-delivery-api
 	url = https://github.com/opticSquid/hangout-content-delivery-api.git
-[submodule "k3s"]
-	path = k3s
+[submodule "hangout-infra"]
+	path = hangout-infra
 	url = https://github.com/opticSquid/hangout-infra.git

@@ -1,0 +1,180 @@
+{
+  "main": {
+    "id": "5b2bfd4c7e6627f9",
+    "type": "split",
+    "children": [
+      {
+        "id": "8c7e704ed33f5b32",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "338320a2d027e93d",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "graph",
+              "state": {},
+              "pinned": true,
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "1b141a5b5b4b0cfd",
+    "type": "split",
+    "children": [
+      {
+        "id": "4ab550f17e666278",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ccc0e1b168e4c4b2",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "d91637723427a9e0",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#core-services",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "93b75a467e6e5f5e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "9726ae99402d53f2",
+    "type": "split",
+    "children": [
+      {
+        "id": "c0c11b36be4168db",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5c16de5e4e6833b5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "8ced55cc461068ee",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "b85a84b192724bb8",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "cf8d86ce8924f94b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {},
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:Create new base": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "338320a2d027e93d",
+  "lastOpenFiles": [
+    "web.md",
+    "kafka.md",
+    "geo-postgres.md",
+    "auth-api.md",
+    "grafana.md",
+    "loki.md",
+    "tempo.md",
+    "prometheus.md",
+    "kafka-ui.md",
+    "gateway.md",
+    "Untitled 1.md",
+    "storage-service.md",
+    "post-api.md",
+    "minio.md",
+    "notification-service.md",
+    "otel-collector.md"
+  ]
+}

@@ -1,0 +1,1 @@
+This defines the normal users of the app who do not own a business and want to book services offered by a [[Platform Partner]].

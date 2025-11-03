@@ -1,0 +1,1 @@
+This defines the businesses registering on our platform to offer their services which [[End User]]s can avail.
