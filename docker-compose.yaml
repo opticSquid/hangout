@@ -180,7 +180,7 @@ services:
   # * layer 2 components - dependent on layer 0,1 components
   # event bus
   kafka:
-    image: bitnami/kafka:4.0.0
+    image: soldevelo/kafka:4.0.0
     deploy:
       replicas: 1
       resources:
