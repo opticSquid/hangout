@@ -7,7 +7,7 @@
 This is a hyper local  short video content social media app that lets you do all things scocial media besides has special focus on find the best locations for hanging out with your friends and family helping you spend a quality time and experience  while taking into account your taste, your location and your budget range. Imagine a cross between Zomato District and Instagram Reels.
 
 ## Video Demo of Current Stage
-[![Hangout | Hyperlocal Short Video Social Media Platform](https://markdown-videos-api.jorgenkh.no/youtube/fX0jxBSEch8?width=480&height=270&filetype=png)](https://youtu.be/fX0jxBSEch8)
+[![Hangout | Hyperlocal Short Video Social Media Platform](https://markdown-videos-api.jorgenkh.no/youtube/fX0jxBSEch8?width=640&height=360)](https://youtu.be/fX0jxBSEch8)
 
 ### Whats so unique for the normal users
 
